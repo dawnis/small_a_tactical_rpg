@@ -1,5 +1,6 @@
 use nannou::prelude::*;
 use hexboard::Board;
+use hexgametile::hexagon::HexagonalTile;
 use std::path;
 
 fn main() {
@@ -8,14 +9,14 @@ fn main() {
 
 struct Model {
     _window: window::Id,
-    pub board: Board,
+    pub board: Board<HexagonalTile>,
     pub edge_scale: f32,
     pub world_offset: (i32, i32)
 }
 
 fn model(app: &App) -> Model {
     let _window = app.new_window().view(view).build().unwrap();
-    let image_pth = path::Path::new("maps/lvl1_sprite.png");
+    let image_pth = path::Path::new("/home/dawnis/git/small_a_tactical_rpg/assets/maps/lvl1_sprite.png");
     let edge_scale = 25.;
     let board = Board::from_img(image_pth, edge_scale);
     Model {
