@@ -1,3 +1,5 @@
+mod tilefactory;
+
 use nannou::prelude::*;
 use hexboard::Board;
 use hexgametile::hexagon::HexagonalTile;
