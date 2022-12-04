@@ -18,7 +18,10 @@ fn model(app: &App) -> Model {
     let _window = app.new_window().view(view).build().unwrap();
     let image_pth = path::Path::new("/home/dawnis/git/small_a_tactical_rpg/assets/maps/lvl1_sprite.png");
     let edge_scale = 25.;
-    let board = Board::from_img(image_pth, edge_scale);
+    let app_rect = app.window_rect();
+    let board = Board::from_img(image_pth, edge_scale, 
+                                (app_rect.left(), app_rect.right(),
+                               app_rect.top(), app_rect.bottom()));
     Model {
         _window,
         board,
@@ -68,9 +71,8 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
-    let bounds = app.window_rect();
     draw.background().color(BEIGE);
-    model.board.make(model.world_offset, &draw, bounds);
+    model.board.display(model.world_offset, &draw);
 
     draw.to_frame(app, &frame).unwrap();
 }
