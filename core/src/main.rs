@@ -2,7 +2,7 @@ mod tilefactory;
 
 use nannou::prelude::*;
 use hexboard::Board;
-use hexgametile::hexagon::HexagonalTile;
+use tilefactory::HextileFactory;
 use std::path;
 
 fn main() {
@@ -11,7 +11,7 @@ fn main() {
 
 struct Model {
     _window: window::Id,
-    pub board: Board<HexagonalTile>,
+    pub board: Board<HextileFactory>,
     pub edge_scale: f32,
     pub world_offset: (i32, i32)
 }

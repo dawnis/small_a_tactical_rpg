@@ -6,42 +6,38 @@ use hexboard::Hextile;
 /// HexagonalTile stores the scale and properties of each game tile.
 #[derive(Debug)]
 pub struct HexagonalTile {
+    api: Draw,
     edge: f32,
     pub terrain: Terrain,
 }
 
 impl HexagonalTile {
-    pub fn new(edge: f32, terrain: Terrain) -> Self {
+    pub fn new(api: Draw, edge: f32, terrain: Terrain) -> Self {
         HexagonalTile {
+            api,
             edge,
             terrain,
         }
     }
 
-    pub fn from_pixel(edge: f32, pixel: image::Rgba<u8>) -> Self {
-        HexagonalTile::new(edge, Terrain::from(pixel))
+    pub fn from_pixel(api: Draw, edge: f32, pixel: image::Rgba<u8>) -> Self {
+        HexagonalTile::new(api, edge, Terrain::from(pixel))
     }
 }
 
 impl Hextile for HexagonalTile {
-
-    fn default() -> Self {
-        HexagonalTile { edge: 25., terrain: Terrain::Air }
-    }
-
-    fn from_pixel(edge: f32, pixel: image::Rgba<u8>) -> Self {
-        HexagonalTile::from_pixel(edge, pixel)
-    }
 
     fn get_scale(&self) -> f32 {
         self.edge
     }
 
     fn resize(&self, new_edge_size: f32) -> Self {
-        HexagonalTile::new(new_edge_size, self.terrain)
+        HexagonalTile::new(self.api, new_edge_size, self.terrain)
     }
 
-    fn draw(&self, axial: Coordinate, draw: &Draw) {
+    fn draw(&self, axial: Coordinate) {
+
+        let draw = &self.api;
 
         let hexagon_pixel_ctr = axial.to_pixel(Spacing::FlatTop(self.edge));
 

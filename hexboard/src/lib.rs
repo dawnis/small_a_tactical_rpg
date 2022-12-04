@@ -14,10 +14,17 @@ use std::collections::BTreeMap;
 /// Trait which must be implemented by tiles using this libary.
 pub trait Hextile {
     fn get_scale(&self) -> f32;
-    fn draw(&self, c: Coordinate, d: &Draw);
-    fn from_pixel(scale: f32, pixel: image::Rgba<u8>) -> Self;
+    fn draw(&self, c: Coordinate);
     fn resize(&self, scale: f32) -> Self;
     fn default() -> Self;
+}
+
+/// Factory pattern implementation for tile builders
+pub trait TileFactory {
+    type Output: Hextile;
+    fn api() -> Draw;
+    fn from_pixel(scale: f32, pixel: image::Rgba<u8>) -> Self;
+    fn build(&self) -> Self::Output;
 }
 
 #[derive(Default, Clone, Copy)]
@@ -30,8 +37,8 @@ struct ViewBoundary {
 
 /// Maps hexagonal tiles by their axial coordinate.
 #[derive(Default)]
-pub struct Board<T> {
-    pub tiles: BTreeMap<Coordinate, T>,
+pub struct Board<Hextile> {
+    pub tiles: BTreeMap<Coordinate, Hextile>,
     vb: ViewBoundary
 }
 
@@ -84,7 +91,7 @@ impl<T: Hextile> Board<T> {
         for (loc, tile) in self.tiles.iter() {
             let oc = *loc + Coordinate::new(offset.0, offset.1);
             if self.is_viewable(oc, tile.get_scale()) {
-                    tile.draw(oc, draw);
+                    tile.draw(oc);
                }
         }
     }
