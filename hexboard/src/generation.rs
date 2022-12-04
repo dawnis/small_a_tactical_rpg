@@ -1,8 +1,8 @@
-use crate::TileFactory;
+use crate::{TileFactory, Hextile};
 use hex2d::{Coordinate, Spin, XY};
 use std::collections::BTreeMap;
 
-pub fn map_ti<T: TileFactory>(
+pub fn map_ti<T: TileFactory + TileFactory<Output = dyn Hextile>>(
     cx: Vec<(Coordinate, image::Rgba<u8>)>,
     scale: f32,
 ) -> BTreeMap<Coordinate, T> {
@@ -16,7 +16,7 @@ pub fn map_ti<T: TileFactory>(
     game_tiles
 }
 
-pub fn circular_ring<T: TileFactory>(_scale: f32, layers: i32) -> BTreeMap<Coordinate, T> {
+pub fn circular_ring<T: TileFactory + TileFactory<Output = dyn Hextile>>(_scale: f32, layers: i32) -> BTreeMap<Coordinate, T> {
     let mut game_tiles = BTreeMap::new();
     let center = Coordinate::new(0, 0);
     game_tiles.insert(center, <T as TileFactory>::build());

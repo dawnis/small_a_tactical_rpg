@@ -42,7 +42,7 @@ pub struct Board<Hextile> {
     vb: ViewBoundary
 }
 
-impl<T: Hextile> Board<T> {
+impl<T: TileFactory + Hextile> Board<T> {
 
     /// Determines if a coordinate is in the viewing window
     fn is_viewable(&self, cd: Coordinate, scale: f32) -> bool {
