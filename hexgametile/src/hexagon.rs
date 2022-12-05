@@ -4,36 +4,32 @@ use hex2d::{Coordinate, Spacing};
 use hexboard::Hextile;
 
 /// HexagonalTile stores the scale and properties of each game tile.
-#[derive(Debug)]
-pub struct HexagonalTile<'a> {
-    api: &'a Draw,
+#[derive(Debug, Copy, Clone)]
+pub struct HexagonalTile {
     edge: f32,
     pub terrain: Terrain,
 }
 
-impl<'a> HexagonalTile<'a> {
-    pub fn new(api: &'a Draw, edge: f32, terrain: Terrain) -> Self {
+impl HexagonalTile {
+    pub fn new(edge: f32, terrain: Terrain) -> Self {
         HexagonalTile {
-            api,
             edge,
             terrain,
         }
     }
 
-    pub fn from_pixel(api: &'a Draw, edge: f32, pixel: image::Rgba<u8>) -> Self {
-        HexagonalTile::new(api, edge, Terrain::from(pixel))
+    pub fn from_pixel(edge: f32, pixel: image::Rgba<u8>) -> Self {
+        HexagonalTile::new( edge, Terrain::from(pixel))
     }
 }
 
-impl<'a> Hextile for HexagonalTile<'a> {
+impl Hextile for HexagonalTile {
 
     fn get_scale(&self) -> f32 {
         self.edge
     }
 
-    fn draw(&self, axial: Coordinate) {
-
-        let draw = self.api;
+    fn draw(&self, draw: &Draw, axial: Coordinate) {
 
         let hexagon_pixel_ctr = axial.to_pixel(Spacing::FlatTop(self.edge));
 

@@ -19,10 +19,10 @@ pub trait Hextile {
 /// Factory pattern implementation for tile builders
 pub trait TileFactory {
     type Output: Hextile;
-    fn api(&self) -> &Draw;
     //fn from_pixel(&self, scale: f32, pixel: image::Rgba<u8>) -> Self::Output;
     fn build(&self) -> Self::Output;
     //fn rescale(&self, tile: Box<dyn Hextile>, scale: f32) -> Self::Output;
+    fn draw_tile(&self, t: Self::Output);
 }
 
 #[derive(Default, Clone, Copy)]
@@ -56,11 +56,11 @@ impl<T: TileFactory> Board<T> {
     }
 
     /// Draws the board using nannou.
-    pub fn display(&self, offset: (i32, i32), draw: &Draw) {
+    pub fn display(&self, offset: (i32, i32)) {
         for (loc, tile) in self.tiles.iter() {
             let oc = *loc + Coordinate::new(offset.0, offset.1);
             if self.is_viewable(oc, tile.get_scale()) {
-                    tile.draw(oc);
+                    self.tf.draw_tile(*tile);
                }
         }
     }

@@ -18,8 +18,8 @@ impl HextileFactory {
 impl TileFactory for HextileFactory {
     type Output =  HexagonalTile;
 
-    fn api(&self) -> &Draw {
-        &*self.api
+    fn draw_tile(&self, c: Coordinate, t: HexagonalTile) {
+        t.draw(self.api)
     }
 
     //fn from_pixel(&self, scale: f32, pixel: Rgba<u8>) -> HexagonalTile {
