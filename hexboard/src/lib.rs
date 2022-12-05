@@ -1,30 +1,28 @@
 //! Hexboard
 //!
 //! Hexboard is a library for coordinating hexagonal tile tracking and display. 
-mod generation;
 
-use crate::generation::{map_ti, circular_ring};
 use hex2d::Spacing;
 use hex2d::Coordinate;
 use image::GenericImageView;
 use nannou::prelude::*;
 use std::path;
 use std::collections::BTreeMap;
+use std::rc::Rc;
 
 /// Trait which must be implemented by tiles using this libary.
 pub trait Hextile {
     fn get_scale(&self) -> f32;
     fn draw(&self, c: Coordinate);
-    fn resize(&self, scale: f32) -> Self;
-    fn default() -> Self;
 }
 
 /// Factory pattern implementation for tile builders
 pub trait TileFactory {
     type Output: Hextile;
-    fn api() -> Draw;
-    fn from_pixel(scale: f32, pixel: image::Rgba<u8>) -> Self;
+    fn api(&self) -> &Draw;
+    //fn from_pixel(&self, scale: f32, pixel: image::Rgba<u8>) -> Self::Output;
     fn build(&self) -> Self::Output;
+    //fn rescale(&self, tile: Box<dyn Hextile>, scale: f32) -> Self::Output;
 }
 
 #[derive(Default, Clone, Copy)]
@@ -36,13 +34,13 @@ struct ViewBoundary {
 }
 
 /// Maps hexagonal tiles by their axial coordinate.
-#[derive(Default)]
-pub struct Board<Hextile> {
-    pub tiles: BTreeMap<Coordinate, Hextile>,
-    vb: ViewBoundary
+pub struct Board<T: TileFactory> {
+    pub tiles: BTreeMap<Coordinate, T::Output>,
+    vb: ViewBoundary,
+    tf: T,
 }
 
-impl<T: TileFactory + Hextile> Board<T> {
+impl<T: TileFactory> Board<T> {
 
     /// Determines if a coordinate is in the viewing window
     fn is_viewable(&self, cd: Coordinate, scale: f32) -> bool {
@@ -51,39 +49,10 @@ impl<T: TileFactory + Hextile> Board<T> {
            && self.vb.bottom < hpc.1  && self.vb.top >  hpc.1 
     }
 
-    /// Generates a ring of hexagons for testing.
-    pub fn new(hexagon_scaling: f32, radius: i32, window: (f32, f32, f32, f32)) -> Self {
-        Board {
-            tiles: circular_ring(hexagon_scaling, radius),
-            vb: ViewBoundary{left: window.0, right: window.1, 
-                top: window.2, bottom: window.3}
-        }
-    }
-
-    /// Generates a map from an image file where each pixel represents a tile. 
-    pub fn from_img(image_path: &path::Path, hexagon_scaling: f32, window: (f32, f32, f32, f32)) -> Self {
-        let (width, height) = image::image_dimensions(image_path).unwrap();
-
-        let mut cx: Vec<(Coordinate, image::Rgba<u8>)> = Vec::new();
-
-        let img = image::open(image_path).expect("file not found");
-
-        for pixel in img.pixels() {
-            let (x, y, c) = pixel;
-            let x_c = x as i32 - width as i32 / 2;
-            let y_c = y as i32 - height as i32 / 4 - x as i32 / 2;
-           
-            let hxc = Coordinate::new(x_c, y_c);
-            cx.push((hxc, c));
-        }
-
-        Board {
-            tiles: map_ti(cx, hexagon_scaling),
-            vb: ViewBoundary{left: window.0, 
-                                              right: window.1,
-                                              top: window.2,
-                                              bottom: window.3}
-        }
+    pub fn default_board(tf: T, app_window: (f32, f32, f32, f32)) -> Self {
+        let mut game_board = BTreeMap::new();
+        game_board.insert(Coordinate::new(0, 0), tf.build());
+        Board {tf, tiles: game_board, vb: ViewBoundary::default()}
     }
 
     /// Draws the board using nannou.
@@ -96,12 +65,4 @@ impl<T: TileFactory + Hextile> Board<T> {
         }
     }
 
-    /// Changes the zoom of the map. 
-    pub fn update_scale(&mut self, new_scale: f32) -> Self {
-        let mut update_game_tiles = BTreeMap::new();
-        for (loc, tile) in self.tiles.iter() {
-            update_game_tiles.insert(*loc, tile.resize(new_scale));
-        }
-        Board { tiles: update_game_tiles, vb: self.vb}
-    }
 }
