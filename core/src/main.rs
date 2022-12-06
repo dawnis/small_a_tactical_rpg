@@ -1,10 +1,12 @@
-mod tilefactory;
+mod hexagonaltile;
+mod terrain;
 
 use nannou::prelude::*;
+use core::Mrgb;
 use hexboard::Board;
 use hexboard::{TileFactory, Hextile};
-use hexgametile::hexagon::HexagonalTile;
-use tilefactory::HextileFactory;
+use hexagonaltile::tile::HexagonalTile;
+use hexagonaltile::factory::HextileFactory;
 use std::path;
 
 fn main() {
