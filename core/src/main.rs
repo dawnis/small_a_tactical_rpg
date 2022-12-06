@@ -1,7 +1,12 @@
+mod logging;
 mod hexagonaltile;
 mod terrain;
 
 use nannou::prelude::*;
+use crate::logging::init_logging;
+use lazy_static::lazy_static;
+use log::*;
+use structopt::StructOpt;
 use core::Mrgb;
 use hexboard::Board;
 use hexboard::{TileFactory, Hextile};
@@ -9,7 +14,25 @@ use hexagonaltile::tile::HexagonalTile;
 use hexagonaltile::factory::HextileFactory;
 use std::path;
 
+
+///Small, a tactical RPG Game
+#[derive(StructOpt, Debug)]
+#[structopt(name = "Small RPG")]
+pub struct Opt {
+    /// Set the color of the monster
+    #[structopt(short, long, default_value = "lvl1_sprite")]
+    lvl: String,
+    /// Verbose mode (-v: warn, -vv: info, -vvv: debug, , -vvvv or more: trace)
+    #[structopt(short, long, parse(from_occurrences))]
+    verbosity: u8,
+}
+
+lazy_static! {
+    pub static ref OPT: Opt = Opt::from_args();
+}
+
 fn main() {
+    init_logging(OPT.verbosity);
     nannou::app(model).update(update).run()
 }
 
