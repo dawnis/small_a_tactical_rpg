@@ -1,6 +1,10 @@
+mod tilefactory;
+
 use nannou::prelude::*;
 use hexboard::Board;
+use hexboard::{TileFactory, Hextile};
 use hexgametile::hexagon::HexagonalTile;
+use tilefactory::HextileFactory;
 use std::path;
 
 fn main() {
@@ -16,12 +20,14 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let _window = app.new_window().view(view).build().unwrap();
-    let image_pth = path::Path::new("/home/dawnis/git/small_a_tactical_rpg/assets/maps/lvl1_sprite.png");
+    //let image_pth = path::Path::new("/home/dawnis/git/small_a_tactical_rpg/assets/maps/lvl1_sprite.png");
     let edge_scale = 25.;
     let app_rect = app.window_rect();
-    let board = Board::from_img(image_pth, edge_scale, 
-                                (app_rect.left(), app_rect.right(),
-                               app_rect.top(), app_rect.bottom()));
+    let htf = HextileFactory::new(None);
+    let board = Board::default_board( (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom()));
+    //let board = Board::from_img(image_pth, edge_scale, 
+    //                           (app_rect.left(), app_rect.right(),
+    //                            app_rect.top(), app_rect.bottom()));
     Model {
         _window,
         board,
@@ -57,22 +63,23 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         model.world_offset = (model.world_offset.0, model.world_offset.1 - speed)
     }
 
-    if app.keys.down.contains(&Key::Plus) && model.edge_scale < max_scale {
-        model.edge_scale += 1.;
-        model.board = model.board.update_scale(model.edge_scale);
-    }
+    //if app.keys.down.contains(&Key::Plus) && model.edge_scale < max_scale {
+    //    model.edge_scale += 1.;
+    //    model.board = model.board.update_scale(model.edge_scale);
+    //}
 
-    if app.keys.down.contains(&Key::Minus) && model.edge_scale > min_scale {
-        model.edge_scale -= 1.;
-        model.board = model.board.update_scale(model.edge_scale);
-    }
+    //if app.keys.down.contains(&Key::Minus) && model.edge_scale > min_scale {
+    //    model.edge_scale -= 1.;
+    //    model.board = model.board.update_scale(model.edge_scale);
+    //}
 
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+    let htf = HextileFactory::new(Some(&draw));
+    htf.display_board(&model.board, model.world_offset);
     draw.background().color(BEIGE);
-    model.board.display(model.world_offset, &draw);
 
     draw.to_frame(app, &frame).unwrap();
 }
