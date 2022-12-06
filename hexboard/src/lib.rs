@@ -13,16 +13,17 @@ use std::rc::Rc;
 /// Trait which must be implemented by tiles using this libary.
 pub trait Hextile {
     fn get_scale(&self) -> f32;
-    fn draw(&self, c: Coordinate);
+    fn build() -> Self;
 }
 
 /// Factory pattern implementation for tile builders
 pub trait TileFactory {
     type Output: Hextile;
     //fn from_pixel(&self, scale: f32, pixel: image::Rgba<u8>) -> Self::Output;
-    fn build(&self) -> Self::Output;
     //fn rescale(&self, tile: Box<dyn Hextile>, scale: f32) -> Self::Output;
-    fn draw_tile(&self, t: Self::Output);
+    fn draw_tile(&self, c: Coordinate, t: &Self::Output);
+
+    fn display_board(&self, b: &Board<Self::Output>, offset: (i32, i32));
 }
 
 #[derive(Default, Clone, Copy)]
@@ -34,35 +35,24 @@ struct ViewBoundary {
 }
 
 /// Maps hexagonal tiles by their axial coordinate.
-pub struct Board<T: TileFactory> {
-    pub tiles: BTreeMap<Coordinate, T::Output>,
+pub struct Board<H: Hextile> {
+    pub tiles: BTreeMap<Coordinate, H>,
     vb: ViewBoundary,
-    tf: T,
 }
 
-impl<T: TileFactory> Board<T> {
-
+impl<H: Hextile> Board<H> {
     /// Determines if a coordinate is in the viewing window
-    fn is_viewable(&self, cd: Coordinate, scale: f32) -> bool {
+    pub fn is_viewable(&self, cd: Coordinate, scale: f32) -> bool {
         let hpc = cd.to_pixel(Spacing::FlatTop(scale));
         self.vb.left < hpc.0 && self.vb.right > hpc.0 
            && self.vb.bottom < hpc.1  && self.vb.top >  hpc.1 
     }
 
-    pub fn default_board(tf: T, app_window: (f32, f32, f32, f32)) -> Self {
+    pub fn default_board(app_window: (f32, f32, f32, f32)) -> Self {
         let mut game_board = BTreeMap::new();
-        game_board.insert(Coordinate::new(0, 0), tf.build());
-        Board {tf, tiles: game_board, vb: ViewBoundary::default()}
+        game_board.insert(Coordinate::new(0, 0), <H as Hextile>::build());
+        Board {tiles: game_board, vb: ViewBoundary::default()}
     }
 
-    /// Draws the board using nannou.
-    pub fn display(&self, offset: (i32, i32)) {
-        for (loc, tile) in self.tiles.iter() {
-            let oc = *loc + Coordinate::new(offset.0, offset.1);
-            if self.is_viewable(oc, tile.get_scale()) {
-                    self.tf.draw_tile(*tile);
-               }
-        }
-    }
 
 }

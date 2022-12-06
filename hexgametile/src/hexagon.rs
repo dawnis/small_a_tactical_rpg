@@ -21,15 +21,8 @@ impl HexagonalTile {
     pub fn from_pixel(edge: f32, pixel: image::Rgba<u8>) -> Self {
         HexagonalTile::new( edge, Terrain::from(pixel))
     }
-}
 
-impl Hextile for HexagonalTile {
-
-    fn get_scale(&self) -> f32 {
-        self.edge
-    }
-
-    fn draw(&self, draw: &Draw, axial: Coordinate) {
+    pub fn draw(&self, draw: &Draw, axial: Coordinate) {
 
         let hexagon_pixel_ctr = axial.to_pixel(Spacing::FlatTop(self.edge));
 
@@ -49,6 +42,19 @@ impl Hextile for HexagonalTile {
         });
         draw.polyline().weight(1.0).points_colored(points);
     }
+}
+
+impl Hextile for HexagonalTile {
+
+    fn build() -> Self {
+        HexagonalTile::new(25., Terrain::Air)
+    }
+
+
+    fn get_scale(&self) -> f32 {
+        self.edge
+    }
+
 
 
 }

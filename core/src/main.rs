@@ -2,6 +2,8 @@ mod tilefactory;
 
 use nannou::prelude::*;
 use hexboard::Board;
+use hexboard::{TileFactory, Hextile};
+use hexgametile::hexagon::HexagonalTile;
 use tilefactory::HextileFactory;
 use std::rc::Rc;
 use std::path;
@@ -12,7 +14,7 @@ fn main() {
 
 struct Model {
     _window: window::Id,
-    pub board: Board<HextileFactory>,
+    pub board: Board<HexagonalTile>,
     pub edge_scale: f32,
     pub world_offset: (i32, i32)
 }
@@ -22,10 +24,8 @@ fn model(app: &App) -> Model {
     //let image_pth = path::Path::new("/home/dawnis/git/small_a_tactical_rpg/assets/maps/lvl1_sprite.png");
     let edge_scale = 25.;
     let app_rect = app.window_rect();
-    let draw_api = &app.draw();
-    let htf = HextileFactory::new(draw_api);
-    let board = Board::default_board(htf, 
-                                     (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom()));
+    let htf = HextileFactory::new(None);
+    let board = Board::default_board( (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom()));
     //let board = Board::from_img(image_pth, edge_scale, 
     //                           (app_rect.left(), app_rect.right(),
     //                            app_rect.top(), app_rect.bottom()));
@@ -78,8 +78,9 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+    let htf = HextileFactory::new(Some(&draw));
     draw.background().color(BEIGE);
-    model.board.display(model.world_offset, &draw);
+    htf.display_board(&model.board, model.world_offset);
 
     draw.to_frame(app, &frame).unwrap();
 }
