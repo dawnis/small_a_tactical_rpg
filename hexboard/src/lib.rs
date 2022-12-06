@@ -8,7 +8,6 @@ use image::GenericImageView;
 use nannou::prelude::*;
 use std::path;
 use std::collections::BTreeMap;
-use std::rc::Rc;
 
 /// Trait which must be implemented by tiles using this libary.
 pub trait Hextile {
@@ -51,7 +50,10 @@ impl<H: Hextile> Board<H> {
     pub fn default_board(app_window: (f32, f32, f32, f32)) -> Self {
         let mut game_board = BTreeMap::new();
         game_board.insert(Coordinate::new(0, 0), <H as Hextile>::build());
-        Board {tiles: game_board, vb: ViewBoundary::default()}
+        Board {tiles: game_board, vb: ViewBoundary{left: app_window.0,
+                                                   right: app_window.1,
+                                                   top: app_window.2,
+                                                   bottom: app_window.3} }
     }
 
 

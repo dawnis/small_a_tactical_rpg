@@ -50,11 +50,8 @@ impl Hextile for HexagonalTile {
         HexagonalTile::new(25., Terrain::Air)
     }
 
-
     fn get_scale(&self) -> f32 {
         self.edge
     }
-
-
 
 }

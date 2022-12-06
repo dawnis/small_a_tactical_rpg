@@ -5,7 +5,6 @@ use hexboard::Board;
 use hexboard::{TileFactory, Hextile};
 use hexgametile::hexagon::HexagonalTile;
 use tilefactory::HextileFactory;
-use std::rc::Rc;
 use std::path;
 
 fn main() {
@@ -79,8 +78,8 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     let htf = HextileFactory::new(Some(&draw));
-    draw.background().color(BEIGE);
     htf.display_board(&model.board, model.world_offset);
+    draw.background().color(BEIGE);
 
     draw.to_frame(app, &frame).unwrap();
 }
