@@ -40,7 +40,6 @@ fn main() {
 struct Model {
     _window: window::Id,
     pub board: Board<HexagonalTile>,
-    pub edge_scale: f32,
     pub world_offset: (i32, i32)
 }
 
@@ -57,7 +56,6 @@ fn model(app: &App) -> Model {
     Model {
         _window,
         board,
-        edge_scale,
         world_offset: (0, 0)
     }
 }
@@ -89,15 +87,15 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         model.world_offset = (model.world_offset.0, model.world_offset.1 - speed)
     }
 
-    //if app.keys.down.contains(&Key::Plus) && model.edge_scale < max_scale {
-    //    model.edge_scale += 1.;
-    //    model.board = model.board.update_scale(model.edge_scale);
-    //}
+    if app.keys.down.contains(&Key::Plus) && model.board.scale() < max_scale {
+        let updated_scale = model.board.scale() + 1.;
+        model.board.update_scale(updated_scale);
+    }
 
-    //if app.keys.down.contains(&Key::Minus) && model.edge_scale > min_scale {
-    //    model.edge_scale -= 1.;
-    //    model.board = model.board.update_scale(model.edge_scale);
-    //}
+    if app.keys.down.contains(&Key::Minus) && model.board.scale() > min_scale {
+        let updated_scale = model.board.scale() - 1.;
+         model.board.update_scale(updated_scale);
+    }
 
 }
 
