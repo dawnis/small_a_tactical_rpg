@@ -9,6 +9,7 @@ use log::*;
 use structopt::StructOpt;
 use core::Mrgb;
 use hexboard::Board;
+use hexboard::builder::BoardBuilder;
 use hexboard::{TileFactory, Hextile};
 use hexagonaltile::tile::HexagonalTile;
 use hexagonaltile::factory::HextileFactory;
@@ -48,8 +49,8 @@ fn model(app: &App) -> Model {
     //let image_pth = path::Path::new("/home/dawnis/git/small_a_tactical_rpg/assets/maps/lvl1_sprite.png");
     let edge_scale = 25.;
     let app_rect = app.window_rect();
-    let htf = HextileFactory::new(None);
-    let board = Board::default_board( (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom()));
+    //let htf = HextileFactory::new(None);
+    let board = BoardBuilder::new().island_c(5, (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom()));
     //let board = Board::from_img(image_pth, edge_scale, 
     //                           (app_rect.left(), app_rect.right(),
     //                            app_rect.top(), app_rect.bottom()));

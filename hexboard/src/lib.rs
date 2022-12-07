@@ -2,7 +2,7 @@
 //!
 //! Hexboard is a library for coordinating hexagonal tile tracking and display. 
 
-mod builder;
+pub mod builder;
 
 use hex2d::Spacing;
 use hex2d::Coordinate;
@@ -15,7 +15,7 @@ use std::collections::BTreeMap;
 /// Trait which must be implemented by tiles using this libary.
 pub trait Hextile {
     fn get_scale(&self) -> f32;
-    fn build() -> Self;
+    fn default() -> Self;
 }
 
 /// Factory pattern implementation for tile builders
@@ -51,7 +51,7 @@ impl<H: Hextile> Board<H> {
     }
 
     pub fn builder() -> BoardBuilder<H> {
-        BoardBuilder::default()
+        BoardBuilder::new()
     }
 
 
