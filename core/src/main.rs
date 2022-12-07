@@ -5,15 +5,17 @@ mod terrain;
 use nannou::prelude::*;
 use crate::logging::init_logging;
 use lazy_static::lazy_static;
-use log::*;
 use structopt::StructOpt;
 use core::Mrgb;
+use log::*;
 use hexboard::Board;
 use hexboard::builder::BoardBuilder;
 use hexboard::{TileFactory, Hextile};
 use hexagonaltile::tile::HexagonalTile;
 use hexagonaltile::factory::HextileFactory;
 use std::path;
+use std::iter::*;
+use config::{Config, File, FileFormat};
 
 
 ///Small, a tactical RPG Game
@@ -30,6 +32,17 @@ pub struct Opt {
 
 lazy_static! {
     pub static ref OPT: Opt = Opt::from_args();
+    pub static ref CFG: Option<Config> = {
+        let cfg = Config::builder().add_source(File::new("core/game_configuration.toml", FileFormat::Toml));
+
+        match cfg.build() {
+            Ok(config) => Some(config),
+            Err(_) => {
+                error!("couldn't load game configuration");
+                None
+                }
+            }
+        };
 }
 
 fn main() {

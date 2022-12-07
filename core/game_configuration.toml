@@ -1,0 +1,9 @@
+# This is the configuration for the core game
+
+title = "Small RPG Config"
+
+[assets]
+location="assets"
+
+[levels]
+treehouse="lvl1_sprite.png"
