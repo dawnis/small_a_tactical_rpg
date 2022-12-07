@@ -14,7 +14,6 @@ use std::collections::BTreeMap;
 
 /// Trait which must be implemented by tiles using this libary.
 pub trait Hextile {
-    fn get_scale(&self) -> f32;
     fn default() -> Self;
 }
 
@@ -23,7 +22,7 @@ pub trait TileFactory {
     type Output: Hextile;
     //fn from_pixel(&self, scale: f32, pixel: image::Rgba<u8>) -> Self::Output;
     //fn rescale(&self, tile: Box<dyn Hextile>, scale: f32) -> Self::Output;
-    fn draw_tile(&self, c: Coordinate, t: &Self::Output);
+    fn draw_tile(&self, c: Coordinate, scale: f32, t: &Self::Output);
 
     fn display_board(&self, b: &Board<Self::Output>, offset: (i32, i32));
 }
@@ -39,20 +38,30 @@ struct ViewBoundary {
 /// Maps hexagonal tiles by their axial coordinate.
 pub struct Board<H: Hextile> {
     pub tiles: BTreeMap<Coordinate, H>,
+    scale: f32,
     vb: ViewBoundary,
 }
 
 impl<H: Hextile> Board<H> {
     /// Determines if a coordinate is in the viewing window
-    pub fn is_viewable(&self, cd: Coordinate, scale: f32) -> bool {
-        let hpc = cd.to_pixel(Spacing::FlatTop(scale));
+    pub fn is_viewable(&self, cd: Coordinate) -> bool {
+        let hpc = cd.to_pixel(Spacing::FlatTop(self.scale));
         self.vb.left < hpc.0 && self.vb.right > hpc.0 
            && self.vb.bottom < hpc.1  && self.vb.top >  hpc.1 
+    }
+
+    pub fn update_scale(&mut self, new_scale: f32) {
+        self.scale = new_scale;
+    }
+
+    pub fn scale(&self) -> f32 {
+        self.scale
     }
 
     pub fn builder() -> BoardBuilder<H> {
         BoardBuilder::new()
     }
+
 
 
 }

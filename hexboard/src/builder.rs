@@ -35,7 +35,7 @@ impl<H: Hextile> BoardBuilder<H> {
             }
         }
 
-        Board {tiles: game_board, vb: ViewBoundary{left: app_window.0,
+        Board {tiles: game_board, scale: 25., vb: ViewBoundary{left: app_window.0,
                                                    right: app_window.1,
                                                    top: app_window.2,
                                                    bottom: app_window.3} }

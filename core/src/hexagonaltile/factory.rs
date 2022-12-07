@@ -18,8 +18,8 @@ impl<'a> HextileFactory<'a> {
 impl<'a> TileFactory for HextileFactory<'a> {
     type Output =  HexagonalTile;
 
-    fn draw_tile(&self, c: Coordinate, t: &HexagonalTile) {
-        t.draw(self.api.unwrap(), c)
+    fn draw_tile(&self, c: Coordinate, scale: f32, t: &HexagonalTile) {
+        t.draw(self.api.unwrap(), c, scale)
     }
 
     //fn from_pixel(&self, scale: f32, pixel: Rgba<u8>) -> HexagonalTile {
@@ -30,8 +30,8 @@ impl<'a> TileFactory for HextileFactory<'a> {
     fn display_board(&self, board: &Board<HexagonalTile>, offset: (i32, i32)) {
         for (loc, tile) in board.tiles.iter() {
             let oc = *loc + Coordinate::new(offset.0, offset.1);
-            if board.is_viewable(oc, tile.get_scale()) {
-                    self.draw_tile(oc, tile);
+            if board.is_viewable(oc) {
+                    self.draw_tile(oc, board.scale(), tile);
                }
         }
     }
