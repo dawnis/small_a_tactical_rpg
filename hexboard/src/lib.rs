@@ -2,8 +2,11 @@
 //!
 //! Hexboard is a library for coordinating hexagonal tile tracking and display. 
 
+pub mod builder;
+
 use hex2d::Spacing;
 use hex2d::Coordinate;
+use crate::builder::BoardBuilder;
 use image::GenericImageView;
 use nannou::prelude::*;
 use std::path;
@@ -12,7 +15,7 @@ use std::collections::BTreeMap;
 /// Trait which must be implemented by tiles using this libary.
 pub trait Hextile {
     fn get_scale(&self) -> f32;
-    fn build() -> Self;
+    fn default() -> Self;
 }
 
 /// Factory pattern implementation for tile builders
@@ -47,13 +50,8 @@ impl<H: Hextile> Board<H> {
            && self.vb.bottom < hpc.1  && self.vb.top >  hpc.1 
     }
 
-    pub fn default_board(app_window: (f32, f32, f32, f32)) -> Self {
-        let mut game_board = BTreeMap::new();
-        game_board.insert(Coordinate::new(0, 0), <H as Hextile>::build());
-        Board {tiles: game_board, vb: ViewBoundary{left: app_window.0,
-                                                   right: app_window.1,
-                                                   top: app_window.2,
-                                                   bottom: app_window.3} }
+    pub fn builder() -> BoardBuilder<H> {
+        BoardBuilder::new()
     }
 
 

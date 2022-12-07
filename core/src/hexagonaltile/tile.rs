@@ -46,7 +46,7 @@ impl HexagonalTile {
 
 impl Hextile for HexagonalTile {
 
-    fn build() -> Self {
+    fn default() -> Self {
         HexagonalTile::new(25., Terrain::Air)
     }
 
