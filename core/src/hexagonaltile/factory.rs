@@ -1,6 +1,5 @@
 use crate::hexagonaltile::tile::HexagonalTile;
-use crate::terrain::Terrain;
-use hexboard::{Board, TileFactory, Hextile};
+use hexboard::{Board, TileFactory};
 use hex2d::Coordinate;
 use nannou::prelude::*;
 

@@ -7,23 +7,18 @@ pub mod builder;
 use hex2d::Spacing;
 use hex2d::Coordinate;
 use crate::builder::BoardBuilder;
-use image::GenericImageView;
-use nannou::prelude::*;
-use std::path;
 use std::collections::BTreeMap;
 
-/// Trait which must be implemented by tiles using this libary.
+/// Interface for hexagonal tiles
 pub trait Hextile {
     fn default() -> Self;
+    fn from_pixel(pixel: image::Rgba<u8>) -> Self;
 }
 
-/// Factory pattern implementation for tile builders
+/// Interface for the drawing api
 pub trait TileFactory {
     type Output: Hextile;
-    //fn from_pixel(&self, scale: f32, pixel: image::Rgba<u8>) -> Self::Output;
-    //fn rescale(&self, tile: Box<dyn Hextile>, scale: f32) -> Self::Output;
     fn draw_tile(&self, c: Coordinate, scale: f32, t: &Self::Output);
-
     fn display_board(&self, b: &Board<Self::Output>, offset: (i32, i32));
 }
 
