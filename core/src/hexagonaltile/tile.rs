@@ -16,10 +16,6 @@ impl HexagonalTile {
         }
     }
 
-    pub fn from_pixel(pixel: image::Rgba<u8>) -> Self {
-        HexagonalTile::new(Terrain::from(pixel))
-    }
-
     pub fn draw(&self, draw: &Draw, axial: Coordinate, scale: f32) {
 
         let hexagon_pixel_ctr = axial.to_pixel(Spacing::FlatTop(scale));
@@ -45,6 +41,11 @@ impl HexagonalTile {
 impl Hextile for HexagonalTile {
 
     fn default() -> Self {
-        HexagonalTile::new(Terrain::Air)
+        HexagonalTile::new(Terrain::Wood)
     }
+
+    fn from_pixel(pixel: image::Rgba<u8>) -> Self {
+        HexagonalTile::new(Terrain::from(pixel))
+    }
+
 }

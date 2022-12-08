@@ -19,9 +19,12 @@ use config::{Config, File, FileFormat};
 #[derive(StructOpt, Debug)]
 #[structopt(name = "Small RPG")]
 pub struct Opt {
-    /// Set the color of the monster
+    /// Set the level that is loaded
     #[structopt(short, long, default_value = "treehouse")]
     lvl: String,
+    /// Set whether board is loaded using generation or a map
+    #[structopt(short, long, default_value = "image")]
+    generate_method: String,
     /// Verbose mode (-v: warn, -vv: info, -vvv: debug, , -vvvv or more: trace)
     #[structopt(short, long, parse(from_occurrences))]
     verbosity: u8,
@@ -70,13 +73,16 @@ fn model(app: &App) -> Model {
     let image_pth = Path::new(&level_maps_folder).join(Path::new(&level));
     debug!("Image path read at {:?}", image_pth);
 
-    let edge_scale = 25.;
     let app_rect = app.window_rect();
+    let app_rect_as_tuple = (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom());
+
     //let htf = HextileFactory::new(None);
-    let board = BoardBuilder::new().island_c(5, (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom()));
-    //let board = Board::from_img(image_pth, edge_scale, 
-    //                           (app_rect.left(), app_rect.right(),
-    //                            app_rect.top(), app_rect.bottom()));
+    let board = match OPT.generate_method.as_str() {
+        "image" => BoardBuilder::new().map_image_px(&image_pth, app_rect_as_tuple),
+        "platform" => BoardBuilder::new().island_c(20, (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom())),
+         _ => panic!("Unable to choose map generation option")
+    };
+
     Model {
         _window,
         board,
