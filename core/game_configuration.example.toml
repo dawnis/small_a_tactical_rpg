@@ -1,0 +1,11 @@
+# This is the configuration for the core game
+
+title = "Small RPG Config"
+
+[assets]
+maps="/path/to/maps"
+sprites="/path/to/sprites"
+
+[levels]
+treehouse="lvl1_sprite.png"
+
