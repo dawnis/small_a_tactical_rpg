@@ -3,7 +3,9 @@
 title = "Small RPG Config"
 
 [assets]
-location="assets"
+maps="/path/to/maps"
+sprites="/path/to/sprites"
 
 [levels]
 treehouse="lvl1_sprite.png"
+

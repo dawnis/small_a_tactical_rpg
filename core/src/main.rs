@@ -8,13 +8,10 @@ use lazy_static::lazy_static;
 use structopt::StructOpt;
 use core::Mrgb;
 use log::*;
-use hexboard::Board;
+use hexboard::*;
 use hexboard::builder::BoardBuilder;
-use hexboard::{TileFactory, Hextile};
-use hexagonaltile::tile::HexagonalTile;
-use hexagonaltile::factory::HextileFactory;
-use std::path;
-use std::iter::*;
+use hexagonaltile::{tile::HexagonalTile, factory::HextileFactory};
+use std::path::Path;
 use config::{Config, File, FileFormat};
 
 
@@ -23,7 +20,7 @@ use config::{Config, File, FileFormat};
 #[structopt(name = "Small RPG")]
 pub struct Opt {
     /// Set the color of the monster
-    #[structopt(short, long, default_value = "lvl1_sprite")]
+    #[structopt(short, long, default_value = "treehouse")]
     lvl: String,
     /// Verbose mode (-v: warn, -vv: info, -vvv: debug, , -vvvv or more: trace)
     #[structopt(short, long, parse(from_occurrences))]
@@ -43,6 +40,12 @@ lazy_static! {
                 }
             }
         };
+
+}
+
+fn cfg_fetch(key: &str) -> String {
+    CFG.as_ref().expect("Unable to generate configuration!")
+       .get_string(key).unwrap_or_else(|_| panic!("Couldn't find requested configuration key: {}", key))
 }
 
 fn main() {
@@ -58,7 +61,15 @@ struct Model {
 
 fn model(app: &App) -> Model {
     let _window = app.new_window().view(view).build().unwrap();
-    //let image_pth = path::Path::new("/home/dawnis/git/small_a_tactical_rpg/assets/maps/lvl1_sprite.png");
+
+    let level_cfg_key = "levels.".to_owned() + &OPT.lvl;
+    let level = cfg_fetch(&level_cfg_key);
+    debug!("Loading level: {:?}", level);
+
+    let level_maps_folder = cfg_fetch("assets.maps");
+    let image_pth = Path::new(&level_maps_folder).join(Path::new(&level));
+    debug!("Image path read at {:?}", image_pth);
+
     let edge_scale = 25.;
     let app_rect = app.window_rect();
     //let htf = HextileFactory::new(None);
