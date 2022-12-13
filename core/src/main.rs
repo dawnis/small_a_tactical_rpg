@@ -59,7 +59,8 @@ fn main() {
 struct Model {
     _window: window::Id,
     pub board: Board<HexagonalTile>,
-    pub world_offset: (i32, i32)
+    pub world_offset: (i32, i32),
+    wasp: wgpu::Texture
 }
 
 fn model(app: &App) -> Model {
@@ -72,6 +73,11 @@ fn model(app: &App) -> Model {
     let level_maps_folder = cfg_fetch("assets.maps");
     let image_pth = Path::new(&level_maps_folder).join(Path::new(&level));
     debug!("Image path read at {:?}", image_pth);
+
+    let sprite_assets_path = cfg_fetch("assets.sprites");
+    let wasp_sprite = cfg_fetch("sprites.wasp");
+    let wasp_pth = Path::new(&sprite_assets_path).join(Path::new(&wasp_sprite));
+    let wasp = wgpu::Texture::from_path(app, wasp_pth).unwrap();
 
     let app_rect = app.window_rect();
     let app_rect_as_tuple = (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom());
@@ -86,7 +92,8 @@ fn model(app: &App) -> Model {
     Model {
         _window,
         board,
-        world_offset: (0, 0)
+        world_offset: (0, 0),
+        wasp
     }
 }
 
@@ -134,6 +141,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let htf = HextileFactory::new(Some(&draw));
     htf.display_board(&model.board, model.world_offset);
     draw.background().color(BEIGE);
+    draw.texture(&model.wasp);
 
     draw.to_frame(app, &frame).unwrap();
 }
