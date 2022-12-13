@@ -4,8 +4,7 @@
 
 pub mod builder;
 
-use hex2d::Spacing;
-use hex2d::Coordinate;
+use hex2d::{Spacing, Coordinate, Position};
 use crate::builder::BoardBuilder;
 use std::collections::BTreeMap;
 
@@ -13,6 +12,18 @@ use std::collections::BTreeMap;
 pub trait Hextile {
     fn default() -> Self;
     fn from_pixel(pixel: image::Rgba<u8>) -> Self;
+}
+
+pub trait Sprite {
+    fn position(&self) -> Position;
+    fn moves(&self) -> Vec<Coordinate>;
+    fn walk(&mut self);
+}
+
+/// Interface for the drawing api
+pub trait SpriteFactory {
+    type Output: Sprite;
+    fn draw_sprite(&self, scale: f32, s: &Self::Output);
 }
 
 /// Interface for the drawing api
