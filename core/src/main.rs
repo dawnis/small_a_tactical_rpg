@@ -141,7 +141,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let htf = HextileFactory::new(Some(&draw));
     htf.display_board(&model.board, model.world_offset);
     draw.background().color(BEIGE);
-    draw.texture(&model.wasp);
+
+    let r = Rect::from_w_h(model.board.scale(), model.board.scale());
+    draw.texture(&model.wasp)
+         .wh(r.wh());
 
     draw.to_frame(app, &frame).unwrap();
 }
