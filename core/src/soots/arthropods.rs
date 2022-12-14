@@ -1,35 +1,25 @@
 use nannou::prelude::*;
 use hex2d::{Coordinate, Position, Direction};
-use hexboard::Sprite;
+use hexboard::GamePiece;
 
-pub struct Wasp {
+pub struct SootSprite {
     texture: wgpu::Texture,
     position: Position,
 }
 
-impl Wasp {
+impl SootSprite {
     pub fn new(texture: wgpu::Texture) -> Self {
-        Wasp { 
+        SootSprite { 
             texture,
             position: Position::new(Coordinate::new(0, 0), Direction::YZ),
         }
     }
 }
 
-impl Sprite for Wasp {
+impl GamePiece for SootSprite {
 
     fn position(&self) -> Position {
         self.position
-    }
-
-    fn moves(&self) -> Vec<Coordinate> {
-        let mut movement = Vec::new();
-
-        for c in self.position.coord.neighbors() {
-            movement.push(c);
-        }
-
-        movement
     }
 
     fn walk(&mut self) {

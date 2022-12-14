@@ -1,6 +1,7 @@
 mod logging;
 mod hexagonaltile;
-mod terrain;
+mod soots;
+mod factory;
 
 use nannou::prelude::*;
 use crate::logging::init_logging;
@@ -10,7 +11,8 @@ use core::Mrgb;
 use log::*;
 use hexboard::*;
 use hexboard::builder::BoardBuilder;
-use hexagonaltile::{tile::HexagonalTile, factory::HextileFactory};
+use hexagonaltile::tile::HexagonalTile;
+use factory::HextileFactory;
 use std::path::Path;
 use config::{Config, File, FileFormat};
 

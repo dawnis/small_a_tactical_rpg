@@ -1,4 +1,5 @@
 use crate::hexagonaltile::tile::HexagonalTile;
+use crate::soots::arthropods::SootSprite;
 use hexboard::{Board, TileFactory};
 use hex2d::Coordinate;
 use nannou::prelude::*;
@@ -15,7 +16,8 @@ impl<'a> HextileFactory<'a> {
 }
 
 impl<'a> TileFactory for HextileFactory<'a> {
-    type Output =  HexagonalTile;
+    type Tile =  HexagonalTile;
+    type Sprite = SootSprite;
 
     fn draw_tile(&self, c: Coordinate, scale: f32, t: &HexagonalTile) {
         t.draw(self.api.unwrap(), c, scale)

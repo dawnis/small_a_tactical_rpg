@@ -1,5 +1,5 @@
 use std::marker::PhantomData;
-use crate::{Board, Hextile, ViewBoundary};
+use crate::{Board, Hextile, GamePiece, ViewBoundary};
 use hex2d::{Coordinate, Spin, XY};
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -7,14 +7,15 @@ use image;
 use image::GenericImageView;
 
 
-#[derive(Default)]
+#[derive(Default, Copy, Clone)]
 pub struct BoardBuilder<H: Hextile> {
-    _tile: PhantomData<H>
+    _tile: PhantomData<H>,
+    scale: f32,
 }
 
 impl<H: Hextile> BoardBuilder<H> {
     pub fn new() -> BoardBuilder<H> {
-        BoardBuilder{_tile: PhantomData}
+        BoardBuilder{_tile: PhantomData, scale: 25.}
     }
 
     pub fn map_image_px(&self, pixel_file: &Path, app_window: (f32, f32, f32, f32)) -> Board<H> {
@@ -35,8 +36,9 @@ impl<H: Hextile> BoardBuilder<H> {
 
         Board {
             tiles: Self::pix2bmap(cx),
-            scale: 25.,
             vb: ViewBoundary { left: app_window.0, right: app_window.1, top: app_window.2, bottom: app_window.3 },
+            scale: self.scale,
+            pieces: Vec::new(),
         }
     }
 
@@ -71,9 +73,13 @@ impl<H: Hextile> BoardBuilder<H> {
             }
         }
 
-        Board {tiles: game_board, scale: 25., vb: ViewBoundary{left: app_window.0,
+        Board {tiles: game_board, 
+               scale: self.scale, 
+               vb: ViewBoundary{left: app_window.0,
                                                    right: app_window.1,
                                                    top: app_window.2,
-                                                   bottom: app_window.3} }
+                                                   bottom: app_window.3},
+              pieces: Vec::new(),
+        }
     }
 }
