@@ -5,8 +5,6 @@ mod factory;
 
 use nannou::prelude::*;
 use crate::logging::init_logging;
-use lazy_static::lazy_static;
-use structopt::StructOpt;
 use core::Mrgb;
 use log::*;
 use hexboard::*;
@@ -14,44 +12,6 @@ use hexboard::builder::BoardBuilder;
 use hexagonaltile::tile::HexagonalTile;
 use factory::HextileFactory;
 use std::path::Path;
-use config::{Config, File, FileFormat};
-
-
-///Small, a tactical RPG Game
-#[derive(StructOpt, Debug)]
-#[structopt(name = "Small RPG")]
-pub struct Opt {
-    /// Set the level that is loaded
-    #[structopt(short, long, default_value = "treehouse")]
-    lvl: String,
-    /// Set whether board is loaded using generation or a map
-    #[structopt(short, long, default_value = "image")]
-    generate_method: String,
-    /// Verbose mode (-v: warn, -vv: info, -vvv: debug, , -vvvv or more: trace)
-    #[structopt(short, long, parse(from_occurrences))]
-    verbosity: u8,
-}
-
-lazy_static! {
-    pub static ref OPT: Opt = Opt::from_args();
-    pub static ref CFG: Option<Config> = {
-        let cfg = Config::builder().add_source(File::new("core/game_configuration.toml", FileFormat::Toml));
-
-        match cfg.build() {
-            Ok(config) => Some(config),
-            Err(_) => {
-                error!("couldn't load game configuration");
-                None
-                }
-            }
-        };
-
-}
-
-pub fn cfg_fetch(key: &str) -> String {
-    CFG.as_ref().expect("Unable to generate configuration!")
-       .get_string(key).unwrap_or_else(|_| panic!("Couldn't find requested configuration key: {}", key))
-}
 
 fn main() {
     init_logging(OPT.verbosity);
