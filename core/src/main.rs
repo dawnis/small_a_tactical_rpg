@@ -48,7 +48,7 @@ lazy_static! {
 
 }
 
-fn cfg_fetch(key: &str) -> String {
+pub fn cfg_fetch(key: &str) -> String {
     CFG.as_ref().expect("Unable to generate configuration!")
        .get_string(key).unwrap_or_else(|_| panic!("Couldn't find requested configuration key: {}", key))
 }

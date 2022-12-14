@@ -1,29 +1,24 @@
 use nannou::prelude::*;
-use hex2d::{Coordinate, Position, Direction};
-use hexboard::GamePiece;
+use core::cfg_fetch;
 
-pub struct SootSprite {
-    texture: wgpu::Texture,
-    position: Position,
+/// arthropods define enemy types
+#[derive(Debug, Clone, Copy)]
+pub enum Arthropod {
+    Wasp,
 }
 
-impl SootSprite {
-    pub fn new(texture: wgpu::Texture) -> Self {
-        SootSprite { 
-            texture,
-            position: Position::new(Coordinate::new(0, 0), Direction::YZ),
+/// Picks up the texture for each type
+
+impl Arthropod {
+    fn toTexture(&self) -> wgpu::Texture {
+        cfg_fetch();
+    }
+
+    fn toConfig(&self) -> String {
+        "sprites.".to_owned() + match self {
+            Arthropod::Wasp => "wasp",
+            _ => "none"
         }
-    }
-}
-
-impl GamePiece for SootSprite {
-
-    fn position(&self) -> Position {
-        self.position
-    }
-
-    fn walk(&mut self) {
-        let new_position = self.position + Coordinate::new(0, 1);
 
     }
 }

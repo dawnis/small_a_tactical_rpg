@@ -1,5 +1,5 @@
 use crate::hexagonaltile::tile::HexagonalTile;
-use crate::soots::arthropods::SootSprite;
+use crate::soots::sootsprite::SootSprite;
 use hexboard::{Board, TileFactory};
 use hex2d::Coordinate;
 use nannou::prelude::*;
