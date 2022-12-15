@@ -25,7 +25,7 @@ pub trait TileFactory {
     type Sprite: GamePiece;
     fn draw_tile(&self, c: Coordinate, scale: f32, t: &Self::Tile);
     fn draw_sprite(&self, c: Coordinate, scale: f32, s: &Self::Sprite);
-    fn display_board(&self, b: &Board<Self::Tile>, offset: (i32, i32));
+    fn display_board(&self, b: &Board<Self::Tile, Self::Sprite>, offset: (i32, i32));
 }
 
 #[derive(Default, Clone, Copy)]
@@ -37,14 +37,14 @@ struct ViewBoundary {
 }
 
 /// Maps hexagonal tiles by their axial coordinate.
-pub struct Board<H: Hextile> {
+pub struct Board<H: Hextile, G: GamePiece> {
     pub tiles: BTreeMap<Coordinate, H>,
-    pub pieces: Vec<Box<dyn GamePiece>>,
+    pub pieces: Vec<G>,
     scale: f32,
     vb: ViewBoundary,
 }
 
-impl<H: Hextile> Board<H> {
+impl<H: Hextile, G: GamePiece> Board<H, G> {
     /// Determines if a coordinate is in the viewing window
     pub fn is_viewable(&self, cd: Coordinate) -> bool {
         let hpc = cd.to_pixel(Spacing::FlatTop(self.scale));
@@ -56,7 +56,7 @@ impl<H: Hextile> Board<H> {
         self.scale = new_scale;
     }
 
-    pub fn place(&mut self, new_piece: Box<dyn GamePiece>) {
+    pub fn place(&mut self, new_piece: G) {
         self.pieces.push(new_piece);
     }
 
@@ -64,7 +64,7 @@ impl<H: Hextile> Board<H> {
         self.scale
     }
 
-    pub fn builder() -> BoardBuilder<H> {
+    pub fn builder() -> BoardBuilder<H, G> {
         BoardBuilder::new()
     }
 

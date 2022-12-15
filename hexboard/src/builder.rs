@@ -8,17 +8,18 @@ use image::GenericImageView;
 
 
 #[derive(Default, Copy, Clone)]
-pub struct BoardBuilder<H: Hextile> {
+pub struct BoardBuilder<H: Hextile, G: GamePiece> {
     _tile: PhantomData<H>,
+    _piece: PhantomData<G>,
     scale: f32,
 }
 
-impl<H: Hextile> BoardBuilder<H> {
-    pub fn new() -> BoardBuilder<H> {
-        BoardBuilder{_tile: PhantomData, scale: 25.}
+impl<H: Hextile, G: GamePiece> BoardBuilder<H, G> {
+    pub fn new() -> BoardBuilder<H, G> {
+        BoardBuilder{_tile: PhantomData, _piece: PhantomData, scale: 25.}
     }
 
-    pub fn map_image_px(&self, pixel_file: &Path, app_window: (f32, f32, f32, f32)) -> Board<H> {
+    pub fn map_image_px(&self, pixel_file: &Path, app_window: (f32, f32, f32, f32)) -> Board<H, G> {
         let (width, height) = image::image_dimensions(pixel_file).unwrap();
 
         let mut cx: Vec<(Coordinate, image::Rgba<u8>)> = Vec::new();
@@ -52,7 +53,7 @@ impl<H: Hextile> BoardBuilder<H> {
         game_board
     }
 
-    pub fn island_c(&self, num_layers: i32, app_window: (f32, f32, f32, f32)) -> Board<H> {
+    pub fn island_c(&self, num_layers: i32, app_window: (f32, f32, f32, f32)) -> Board<H, G> {
         assert!(num_layers > 0);
         let mut game_board = BTreeMap::new();
 

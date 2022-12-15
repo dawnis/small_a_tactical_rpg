@@ -23,7 +23,7 @@ fn main() {
 
 struct Model {
     _window: window::Id,
-    pub board: Board<HexagonalTile>,
+    pub board: Board<HexagonalTile, SootSprite>,
     pub world_offset: (i32, i32),
 }
 
@@ -49,7 +49,7 @@ fn model(app: &App) -> Model {
     };
 
     let wasp = SootSprite::new(app, Arthropod::Wasp);
-    board.place(Box::new(wasp));
+    board.place(wasp);
 
     Model {
         _window,
