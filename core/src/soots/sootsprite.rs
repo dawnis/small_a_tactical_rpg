@@ -1,20 +1,31 @@
 use nannou::prelude::*;
-use hex2d::{Coordinate, Position, Direction};
+use hex2d::{Coordinate, Position, Direction, Spacing};
 use hexboard::GamePiece;
 use crate::soots::arthropods::Arthropod;
 
 pub struct SootSprite {
-    soot_type: Arthropod,
+    stype: Arthropod,
     position: Position,
+    texture: wgpu::Texture,
     
 }
 
 impl SootSprite {
-    pub fn new(texture: wgpu::Texture) -> Self {
+    pub fn new(app: &App, stype: Arthropod) -> Self {
         SootSprite { 
-            texture,
+            stype,
             position: Position::new(Coordinate::new(0, 0), Direction::YZ),
+            texture: stype.to_texture(app),
         }
+    }
+
+    pub fn draw(&self, draw: &Draw, scale: f32, off: Coordinate) {
+        let xy_c = self.position.coord + off;
+        let xy = xy_c.to_pixel(Spacing::FlatTop(scale));
+        let bb = Rect::from_w_h(scale, scale);
+        draw.texture(&self.texture)
+            .wh(bb.wh())
+            .xy(Vec2::new(xy.0, xy.1));
     }
 }
 

@@ -12,6 +12,9 @@ use hexboard::builder::BoardBuilder;
 use hexagonaltile::tile::HexagonalTile;
 use factory::HextileFactory;
 use std::path::Path;
+use crate::soots::sootsprite::SootSprite;
+use crate::soots::arthropods::Arthropod;
+use core::{OPT, cfg_fetch};
 
 fn main() {
     init_logging(OPT.verbosity);
@@ -22,7 +25,6 @@ struct Model {
     _window: window::Id,
     pub board: Board<HexagonalTile>,
     pub world_offset: (i32, i32),
-    wasp: wgpu::Texture
 }
 
 fn model(app: &App) -> Model {
@@ -36,26 +38,23 @@ fn model(app: &App) -> Model {
     let image_pth = Path::new(&level_maps_folder).join(Path::new(&level));
     debug!("Image path read at {:?}", image_pth);
 
-    let sprite_assets_path = cfg_fetch("assets.sprites");
-    let wasp_sprite = cfg_fetch("sprites.wasp");
-    let wasp_pth = Path::new(&sprite_assets_path).join(Path::new(&wasp_sprite));
-    let wasp = wgpu::Texture::from_path(app, wasp_pth).unwrap();
-
     let app_rect = app.window_rect();
     let app_rect_as_tuple = (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom());
 
     //let htf = HextileFactory::new(None);
-    let board = match OPT.generate_method.as_str() {
+    let mut board = match OPT.generate_method.as_str() {
         "image" => BoardBuilder::new().map_image_px(&image_pth, app_rect_as_tuple),
         "platform" => BoardBuilder::new().island_c(20, (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom())),
          _ => panic!("Unable to choose map generation option")
     };
 
+    let wasp = SootSprite::new(app, Arthropod::Wasp);
+    board.place(Box::new(wasp));
+
     Model {
         _window,
         board,
         world_offset: (0, 0),
-        wasp
     }
 }
 
@@ -104,9 +103,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
     htf.display_board(&model.board, model.world_offset);
     draw.background().color(BEIGE);
 
-    let r = Rect::from_w_h(model.board.scale(), model.board.scale());
-    draw.texture(&model.wasp)
-         .wh(r.wh());
+    //let r = Rect::from_w_h(model.board.scale(), model.board.scale());
+    //draw.texture(&model.wasp)
+    //     .wh(r.wh());
 
     draw.to_frame(app, &frame).unwrap();
 }

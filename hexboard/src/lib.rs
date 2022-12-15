@@ -24,6 +24,7 @@ pub trait TileFactory {
     type Tile: Hextile;
     type Sprite: GamePiece;
     fn draw_tile(&self, c: Coordinate, scale: f32, t: &Self::Tile);
+    fn draw_sprite(&self, c: Coordinate, scale: f32, s: &Self::Sprite);
     fn display_board(&self, b: &Board<Self::Tile>, offset: (i32, i32));
 }
 
@@ -53,6 +54,10 @@ impl<H: Hextile> Board<H> {
 
     pub fn update_scale(&mut self, new_scale: f32) {
         self.scale = new_scale;
+    }
+
+    pub fn place(&mut self, new_piece: Box<dyn GamePiece>) {
+        self.pieces.push(new_piece);
     }
 
     pub fn scale(&self) -> f32 {

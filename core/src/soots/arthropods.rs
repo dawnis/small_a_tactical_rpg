@@ -12,12 +12,13 @@ pub enum Arthropod {
 
 impl Arthropod {
 
-    fn toTexture(&self, app: &App) -> wgpu::Texture {
-        let texture_path = Path::new(self.assets()).join(Path::new(&cfg_fetch(&self.toConfig())));
+    pub fn to_texture(&self, app: &App) -> wgpu::Texture {
+        let asset_pth = cfg_fetch("assets.sprites");
+        let texture_path = Path::new(&asset_pth).join(Path::new(&cfg_fetch(&self.to_config())));
         wgpu::Texture::from_path(app, texture_path).unwrap()
     }
 
-    fn toConfig(&self) -> String {
+    fn to_config(&self) -> String {
         "sprites.".to_owned() + match self {
             Arthropod::Wasp => "wasp",
             _ => "none"
@@ -25,8 +26,4 @@ impl Arthropod {
 
     }
 
-    fn assets(&self) -> &Path {
-        let asset_pth = cfg_fetch("assets.sprites");
-        &Path::new(&asset_pth)
-    }
 }

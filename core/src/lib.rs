@@ -15,16 +15,14 @@ pub mod factory;
 pub struct Opt {
     /// Set the level that is loaded
     #[structopt(short, long, default_value = "treehouse")]
-    lvl: String,
+    pub lvl: String,
     /// Set whether board is loaded using generation or a map
     #[structopt(short, long, default_value = "image")]
-    generate_method: String,
+    pub generate_method: String,
     /// Verbose mode (-v: warn, -vv: info, -vvv: debug, , -vvvv or more: trace)
     #[structopt(short, long, parse(from_occurrences))]
-    verbosity: u8,
+    pub verbosity: u8,
 }
-
-
 
 lazy_static! {
     pub static ref OPT: Opt = Opt::from_args();
