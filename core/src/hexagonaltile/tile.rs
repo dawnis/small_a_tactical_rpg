@@ -1,5 +1,5 @@
 use nannou::prelude::*;
-use crate::terrain::Terrain;
+use crate::hexagonaltile::terrain::Terrain;
 use hex2d::{Coordinate, Spacing};
 use hexboard::Hextile;
 

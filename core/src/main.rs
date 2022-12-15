@@ -1,55 +1,20 @@
 mod logging;
 mod hexagonaltile;
-mod terrain;
+mod soots;
+mod factory;
 
 use nannou::prelude::*;
 use crate::logging::init_logging;
-use lazy_static::lazy_static;
-use structopt::StructOpt;
 use core::Mrgb;
 use log::*;
 use hexboard::*;
 use hexboard::builder::BoardBuilder;
-use hexagonaltile::{tile::HexagonalTile, factory::HextileFactory};
+use hexagonaltile::tile::HexagonalTile;
+use factory::HextileFactory;
 use std::path::Path;
-use config::{Config, File, FileFormat};
-
-
-///Small, a tactical RPG Game
-#[derive(StructOpt, Debug)]
-#[structopt(name = "Small RPG")]
-pub struct Opt {
-    /// Set the level that is loaded
-    #[structopt(short, long, default_value = "treehouse")]
-    lvl: String,
-    /// Set whether board is loaded using generation or a map
-    #[structopt(short, long, default_value = "image")]
-    generate_method: String,
-    /// Verbose mode (-v: warn, -vv: info, -vvv: debug, , -vvvv or more: trace)
-    #[structopt(short, long, parse(from_occurrences))]
-    verbosity: u8,
-}
-
-lazy_static! {
-    pub static ref OPT: Opt = Opt::from_args();
-    pub static ref CFG: Option<Config> = {
-        let cfg = Config::builder().add_source(File::new("core/game_configuration.toml", FileFormat::Toml));
-
-        match cfg.build() {
-            Ok(config) => Some(config),
-            Err(_) => {
-                error!("couldn't load game configuration");
-                None
-                }
-            }
-        };
-
-}
-
-fn cfg_fetch(key: &str) -> String {
-    CFG.as_ref().expect("Unable to generate configuration!")
-       .get_string(key).unwrap_or_else(|_| panic!("Couldn't find requested configuration key: {}", key))
-}
+use crate::soots::sootsprite::SootSprite;
+use crate::soots::arthropods::Arthropod;
+use core::{OPT, cfg_fetch};
 
 fn main() {
     init_logging(OPT.verbosity);
@@ -58,8 +23,8 @@ fn main() {
 
 struct Model {
     _window: window::Id,
-    pub board: Board<HexagonalTile>,
-    pub world_offset: (i32, i32)
+    pub board: Board<HexagonalTile, SootSprite>,
+    pub world_offset: (i32, i32),
 }
 
 fn model(app: &App) -> Model {
@@ -77,16 +42,19 @@ fn model(app: &App) -> Model {
     let app_rect_as_tuple = (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom());
 
     //let htf = HextileFactory::new(None);
-    let board = match OPT.generate_method.as_str() {
+    let mut board = match OPT.generate_method.as_str() {
         "image" => BoardBuilder::new().map_image_px(&image_pth, app_rect_as_tuple),
         "platform" => BoardBuilder::new().island_c(20, (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom())),
          _ => panic!("Unable to choose map generation option")
     };
 
+    let wasp = SootSprite::new(app, Arthropod::Wasp);
+    board.place(wasp);
+
     Model {
         _window,
         board,
-        world_offset: (0, 0)
+        world_offset: (0, 0),
     }
 }
 
@@ -134,6 +102,10 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let htf = HextileFactory::new(Some(&draw));
     htf.display_board(&model.board, model.world_offset);
     draw.background().color(BEIGE);
+
+    //let r = Rect::from_w_h(model.board.scale(), model.board.scale());
+    //draw.texture(&model.wasp)
+    //     .wh(r.wh());
 
     draw.to_frame(app, &frame).unwrap();
 }
