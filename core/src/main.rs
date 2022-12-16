@@ -13,8 +13,9 @@ use hexagonaltile::tile::HexagonalTile;
 use factory::HextileFactory;
 use std::path::Path;
 use crate::soots::sootsprite::SootSprite;
-use crate::soots::arthropods::Arthropod;
+use crate::soots::arthropods::Arthropod::*;
 use core::{OPT, cfg_fetch};
+use hex2d::Direction::*;
 
 fn main() {
     init_logging(OPT.verbosity);
@@ -48,11 +49,17 @@ fn model(app: &App) -> Model {
          _ => panic!("Unable to choose map generation option")
     };
 
-    board.place( SootSprite::new(app, (0, 0), Arthropod::Wasp));
-    board.place( SootSprite::new(app, (0, 3), Arthropod::Wasp));
-    board.place( SootSprite::new(app, (1, 2), Arthropod::Wasp));
-    board.place( SootSprite::new(app, (-1, 2), Arthropod::Wasp));
-    board.place( SootSprite::new(app, (-1, -5), Arthropod::Wasp));
+    let wasp_vec = vec![
+        SootSprite::new(app, (0, 0), YZ, Wasp), 
+        SootSprite::new(app, (0, 3), XY, Wasp), 
+        SootSprite::new(app, (1, 2), XZ, Wasp), 
+        SootSprite::new(app, (-1, -2), ZX, Wasp), 
+        SootSprite::new(app, (-1, -5), ZY, Wasp), 
+    ];
+
+    for w in wasp_vec {
+        board.place(w);
+    }
 
     Model {
         _window,
