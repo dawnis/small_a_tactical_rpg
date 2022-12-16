@@ -33,7 +33,7 @@ impl SootSprite {
 
 
         if OPT.verbosity >= 2 {
-            for c in self.legal_moves() {
+            for c in self.legal_next_coord() {
                 let c_off = c + off;
                 let hexagon_pixel_ctr = c_off.to_pixel(Spacing::FlatTop(scale));
 
@@ -51,9 +51,14 @@ impl SootSprite {
         }
     }
 
-    pub fn legal_moves(&self) -> Vec<Coordinate> {
+    pub fn legal_next_coord(&self) -> Vec<Coordinate> {
+
         let possible_moves = self.stype.moves(self.position);
-        possible_moves.iter().map(|&x| x.coord).collect()
+
+        possible_moves.iter()
+            .map(|&x| x.coord)
+            .filter(|&c| c != self.position.coord)
+            .collect()
     }
 }
 

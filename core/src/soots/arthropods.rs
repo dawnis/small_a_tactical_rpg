@@ -36,6 +36,8 @@ impl Arthropod {
         match self {
             Arthropod::Wasp => {
                 vec![
+                    p + Left,
+                    p + Right,
                     p + step(1, p.dir),
                     p + step(1, p.dir + Right),
                     p + step(1, p.dir + Left),
