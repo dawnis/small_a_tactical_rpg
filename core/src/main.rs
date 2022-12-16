@@ -51,10 +51,8 @@ fn model(app: &App) -> Model {
 
     let wasp_vec = vec![
         SootSprite::new(app, (0, 0), YZ, Wasp), 
-        SootSprite::new(app, (0, 3), XY, Wasp), 
-        SootSprite::new(app, (1, 2), XZ, Wasp), 
-        SootSprite::new(app, (-1, -2), ZX, Wasp), 
-        SootSprite::new(app, (-1, -5), ZY, Wasp), 
+        SootSprite::new(app, (0, 5), XY, Wasp), 
+        SootSprite::new(app, (5, 0), ZX, Wasp), 
     ];
 
     for w in wasp_vec {
