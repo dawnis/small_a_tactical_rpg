@@ -48,8 +48,11 @@ fn model(app: &App) -> Model {
          _ => panic!("Unable to choose map generation option")
     };
 
-    let wasp = SootSprite::new(app, Arthropod::Wasp);
-    board.place(wasp);
+    board.place( SootSprite::new(app, (0, 0), Arthropod::Wasp));
+    board.place( SootSprite::new(app, (0, 3), Arthropod::Wasp));
+    board.place( SootSprite::new(app, (1, 2), Arthropod::Wasp));
+    board.place( SootSprite::new(app, (-1, 2), Arthropod::Wasp));
+    board.place( SootSprite::new(app, (-1, -5), Arthropod::Wasp));
 
     Model {
         _window,
