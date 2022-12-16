@@ -3,6 +3,7 @@ use nannou::color::rgba;
 use hex2d::{Coordinate, Position, Direction, Spacing};
 use hexboard::GamePiece;
 use crate::soots::arthropods::Arthropod;
+use crate::OPT;
 
 pub struct SootSprite {
     stype: Arthropod,
@@ -31,20 +32,22 @@ impl SootSprite {
             .xy(Vec2::new(xy.0, xy.1));
 
 
-        for c in self.legal_moves() {
-            let c_off = c + off;
-            let hexagon_pixel_ctr = c_off.to_pixel(Spacing::FlatTop(scale));
+        if OPT.verbosity >= 2 {
+            for c in self.legal_moves() {
+                let c_off = c + off;
+                let hexagon_pixel_ctr = c_off.to_pixel(Spacing::FlatTop(scale));
 
-            let step = 60;
+                let step = 60;
 
-            let points = (0..=360).step_by(step).map(|i| {
-                let radian = deg_to_rad(i as f32);
-                let x = radian.cos() * scale + hexagon_pixel_ctr.0;
-                let y = radian.sin() * scale + hexagon_pixel_ctr.1;
-                (pt2(x, y), ROYALBLUE)
-            });
+                let points = (0..=360).step_by(step).map(|i| {
+                    let radian = deg_to_rad(i as f32);
+                    let x = radian.cos() * scale + hexagon_pixel_ctr.0;
+                    let y = radian.sin() * scale + hexagon_pixel_ctr.1;
+                    (pt2(x, y), ROYALBLUE)
+                });
 
-            draw.polygon().points_colored(points);
+                draw.polygon().points_colored(points);
+            }
         }
     }
 
