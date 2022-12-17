@@ -49,10 +49,13 @@ fn model(app: &App) -> Model {
          _ => panic!("Unable to choose map generation option")
     };
 
+    let vision = 4u32;
+    let reaction = 200.;
+
     let wasp_vec = vec![
-        SootSprite::new(app, (0, 0), YZ, Wasp), 
-        SootSprite::new(app, (0, 5), XY, Wasp), 
-        SootSprite::new(app, (5, 0), ZX, Wasp), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 5), XY, Wasp{vision, reaction}), 
+        SootSprite::new(app, (5, 0), ZX, Wasp{vision, reaction}), 
     ];
 
     for w in wasp_vec {
@@ -72,6 +75,17 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let speed = 2;
     let max_scale = 50.;
     let min_scale = 5.;
+
+    for sprite in model.board.pieces.iter_mut() {
+        if sprite.last_updated > sprite.stype.reaction_time() {
+            sprite.last_updated = 0.;
+            sprite.walk();
+        } else {
+            sprite.last_updated += app.duration.since_prev_update.ms();
+        }
+
+    }
+
 
     if app.keys.down.contains(&Key::C) {
         model.world_offset = (0, 0)

@@ -19,7 +19,7 @@ fn step(stps: i32, d: Direction) -> Coordinate {
 /// arthropods define enemy types
 #[derive(Debug, Clone, Copy)]
 pub enum Arthropod {
-    Wasp,
+    Wasp{reaction: f64, vision: u32},
 }
 
 /// Picks up the texture for each type
@@ -34,7 +34,7 @@ impl Arthropod {
 
     pub fn moves(&self, p: Position) -> Vec<Position> {
         match self {
-            Arthropod::Wasp => {
+            Arthropod::Wasp {reaction: _, vision: _}=> {
                 vec![
                     p + Left,
                     p + Right,
@@ -46,9 +46,15 @@ impl Arthropod {
         }
     }
 
+    pub fn reaction_time(&self) -> f64 {
+        match self {
+            Arthropod::Wasp { reaction, vision: _ } => *reaction,
+        }
+    }
+
     fn to_config(self) -> String {
         "sprites.".to_owned() + match self {
-            Arthropod::Wasp => "wasp",
+            Arthropod::Wasp {reaction: _, vision: _}=> "wasp",
             _ => "none"
         }
 

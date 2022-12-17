@@ -1,13 +1,14 @@
 use nannou::prelude::*;
-use nannou::color::rgba;
+use rand::{thread_rng, Rng};
 use hex2d::{Coordinate, Position, Direction, Spacing};
 use hexboard::GamePiece;
 use crate::soots::arthropods::Arthropod;
 use crate::OPT;
 
 pub struct SootSprite {
-    stype: Arthropod,
-    position: Position,
+    pub stype: Arthropod,
+    pub position: Position,
+    pub last_updated: f64,
     texture: wgpu::Texture,
     
 }
@@ -18,6 +19,7 @@ impl SootSprite {
         SootSprite { 
             stype,
             position: Position::new(Coordinate::new(loc.0, loc.1), orient),
+            last_updated: 0.0,
             texture: stype.to_texture(app),
         }
     }
@@ -69,7 +71,9 @@ impl GamePiece for SootSprite {
     }
 
     fn walk(&mut self) {
-        let new_position = self.position + Coordinate::new(0, 1);
-
+        let possible_moves = self.stype.moves(self.position);
+        let mut rng = thread_rng();
+        let m = rng.gen_range(0..possible_moves.len());
+        self.position = possible_moves[m];
     }
 }
