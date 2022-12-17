@@ -3,7 +3,7 @@ use image::Rgba;
 use nannou::prelude::*;
 
 /// Terrain sets the properties of each tile. 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Terrain {
     Rock,
     Veg,

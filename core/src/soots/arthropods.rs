@@ -1,8 +1,10 @@
 use nannou::prelude::*;
+use crate::hexagonaltile::terrain::{Terrain, Terrain::*};
 use hex2d::{Coordinate, Direction, Position};
 use hex2d::Direction::*;
 use hex2d::Angle::{Left, Right};
 use crate::cfg_fetch;
+use crate::hexagonaltile::tile::HexagonalTile;
 use std::path::Path;
 
 fn step(stps: i32, d: Direction) -> Coordinate {
@@ -13,6 +15,26 @@ fn step(stps: i32, d: Direction) -> Coordinate {
         YZ => Coordinate::new( 0, -stps),
         ZX => Coordinate::new( -stps, stps),
         YX => Coordinate::new( -stps, 0),
+    }
+}
+
+struct BugFormation {
+    name: String,
+    terrains: Vec<Terrain>,
+    reaction: f64,
+    vision: u32,
+}
+
+impl BugFormation {
+    pub fn new( bug: &Arthropod ) -> Self {
+        match bug {
+            Arthropod::Wasp {reaction, vision} => BugFormation { 
+                name: String::from("wasp"), 
+                terrains: vec![Air, Wood, Earth],
+                reaction: *reaction,
+                vision: *vision, 
+            }
+        }
     }
 }
 
@@ -46,6 +68,11 @@ impl Arthropod {
         }
     }
 
+    pub fn is_legal_terrain(&self, t: HexagonalTile) -> bool {
+        let bf = BugFormation::new(self);
+        bf.terrains.iter().filter(|&tx| *tx == t.terrain).count() > 0
+        }
+
     pub fn reaction_time(&self) -> f64 {
         match self {
             Arthropod::Wasp { reaction, vision: _ } => *reaction,
@@ -54,8 +81,7 @@ impl Arthropod {
 
     fn to_config(self) -> String {
         "sprites.".to_owned() + match self {
-            Arthropod::Wasp {reaction: _, vision: _}=> "wasp",
-            _ => "none"
+            Arthropod::Wasp { reaction: _, vision: _ } => "wasp",
         }
 
     }
