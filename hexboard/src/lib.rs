@@ -5,6 +5,7 @@
 pub mod builder;
 pub mod gamecontrol;
 
+use gamecontrol::GController;
 use hex2d::{Spacing, Coordinate, Position};
 use crate::builder::BoardBuilder;
 use std::collections::BTreeMap;
@@ -15,15 +16,17 @@ pub trait Hextile {
     fn from_pixel(pixel: image::Rgba<u8>) -> Self;
 }
 
-pub trait GamePiece {
+pub trait GamePiece<H: Hextile> {
     fn position(&self) -> Position;
-    fn walk(&mut self);
+    fn moveset(&self) -> Vec<Coordinate>;
+    fn is_legal(&self, t: H) -> bool;
+    fn walk(&mut self, move_set: Vec<Coordinate>);
 }
 
 /// Interface for the drawing api
 pub trait TileFactory {
     type Tile: Hextile;
-    type Sprite: GamePiece;
+    type Sprite: GamePiece<Self::Tile>;
     fn draw_tile(&self, c: Coordinate, scale: f32, t: &Self::Tile);
     fn draw_sprite(&self, c: Coordinate, scale: f32, s: &Self::Sprite);
     fn display_board(&self, b: &Board<Self::Tile, Self::Sprite>, offset: (i32, i32));
@@ -38,14 +41,15 @@ struct ViewBoundary {
 }
 
 /// Maps hexagonal tiles by their axial coordinate.
-pub struct Board<H: Hextile, G: GamePiece> {
+pub struct Board<H: Hextile, G: GamePiece<H>> {
     pub tiles: BTreeMap<Coordinate, H>,
     pub pieces: Vec<G>,
     scale: f32,
     vb: ViewBoundary,
 }
 
-impl<H: Hextile, G: GamePiece> Board<H, G> {
+impl<H: Hextile, G: GamePiece<H>> Board<H, G> {
+
     /// Determines if a coordinate is in the viewing window
     pub fn is_viewable(&self, cd: Coordinate) -> bool {
         let hpc = cd.to_pixel(Spacing::FlatTop(self.scale));
@@ -69,6 +73,8 @@ impl<H: Hextile, G: GamePiece> Board<H, G> {
         BoardBuilder::new()
     }
 
-
+    pub fn controller() -> GController<H, G> {
+        GController::new()
+    }
 
 }
