@@ -3,6 +3,7 @@
 //! Hexboard is a library for coordinating hexagonal tile tracking and display. 
 
 pub mod builder;
+pub mod gamecontrol;
 
 use hex2d::{Spacing, Coordinate, Position};
 use crate::builder::BoardBuilder;
