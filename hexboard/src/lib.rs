@@ -19,7 +19,7 @@ pub trait Hextile {
 pub trait GamePiece<H: Hextile> {
     fn position(&self) -> Position;
     fn moveset(&self) -> Vec<Coordinate>;
-    fn is_legal(&self, t: H) -> bool;
+    fn is_legal(&self, t: &H) -> bool;
     fn walk(&mut self, move_set: Vec<Coordinate>);
 }
 
@@ -73,8 +73,8 @@ impl<H: Hextile, G: GamePiece<H>> Board<H, G> {
         BoardBuilder::new()
     }
 
-    pub fn controller() -> GController<H, G> {
-        GController::new()
+    pub fn controller(&self) -> GController<H, G> {
+        GController::new(self.tiles)
     }
 
 }

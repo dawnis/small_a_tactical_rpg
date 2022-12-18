@@ -76,10 +76,12 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let max_scale = 50.;
     let min_scale = 5.;
 
+    let game_controller = self.model.board.game_controller();
+
     for sprite in model.board.pieces.iter_mut() {
         if sprite.last_updated > sprite.stype.reaction_time() {
             sprite.last_updated = 0.;
-            sprite.walk();
+            game_controller.walk_sprite(sprite);
         } else {
             sprite.last_updated += app.duration.since_prev_update.ms();
         }
