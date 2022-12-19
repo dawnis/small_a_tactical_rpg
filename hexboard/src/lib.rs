@@ -74,7 +74,7 @@ impl<H: Hextile, G: GamePiece<H>> Board<H, G> {
     }
 
     pub fn controller(&self) -> GController<H, G> {
-        GController::new(self.tiles)
+        GController::new(&self.tiles)
     }
 
 }

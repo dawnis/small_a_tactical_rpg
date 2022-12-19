@@ -1,7 +1,8 @@
 use nannou::prelude::*;
+use crate::hexagonaltile::tile::HexagonalTile;
 use rand::{thread_rng, Rng};
 use hex2d::{Coordinate, Position, Direction, Spacing};
-use hexboard::GamePiece;
+use hexboard::{GamePiece, Hextile};
 use crate::soots::arthropods::Arthropod;
 use crate::OPT;
 
@@ -64,10 +65,19 @@ impl SootSprite {
     }
 }
 
-impl GamePiece for SootSprite {
+impl<H: Hextile> GamePiece<H> for SootSprite {
 
     fn position(&self) -> Position {
         self.position
+    }
+
+    fn moveset(&self) -> Vec<Coordinate> {
+        let possible_moves = self.stype.moves(self.position);
+        possible_moves.iter().map(|&x| x.coord).collect()
+    }
+
+    fn is_legal(&self, tile: H) -> bool {
+        self.stype.is_legal_terrain(tile)
     }
 
     fn walk(&mut self) {

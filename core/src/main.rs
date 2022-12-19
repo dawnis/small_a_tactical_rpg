@@ -81,7 +81,8 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     for sprite in model.board.pieces.iter_mut() {
         if sprite.last_updated > sprite.stype.reaction_time() {
             sprite.last_updated = 0.;
-            game_controller.walk_sprite(sprite);
+            let legal_moveset = game_controller.legal_moves(sprite);
+            game_controller.walk_sprite(legal_moveset, sprite);
         } else {
             sprite.last_updated += app.duration.since_prev_update.ms();
         }

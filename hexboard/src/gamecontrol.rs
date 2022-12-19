@@ -3,13 +3,13 @@ use std::marker::PhantomData;
 use hex2d::Coordinate;
 use crate::{Hextile, GamePiece};
 
-pub struct GController<H: Hextile, G: GamePiece<H>> {
-    tiles: BTreeMap<Coordinate, H>,
+pub struct GController<'a, H: Hextile, G: GamePiece<H>> {
+    tiles: &'a BTreeMap<Coordinate, H>,
     _piece: PhantomData<G>,
 }
 
-impl<H: Hextile, G: GamePiece<H>> GController<H, G> {
-    pub fn new(tiles: BTreeMap<Coordinate, H>) -> Self {
+impl<'a, H: Hextile, G: GamePiece<H>> GController<'a, H, G> {
+    pub fn new(tiles: &'a BTreeMap<Coordinate, H>) -> Self {
         GController {tiles, _piece: PhantomData}
     }
 
@@ -25,9 +25,12 @@ impl<H: Hextile, G: GamePiece<H>> GController<H, G> {
         sprite_allowed_tiles
     }
 
-    pub fn walk_sprite(&self, s: &G) {
+    pub fn walk_sprite(&self, legal: Vec<Coordinate>, s: &mut G) {
+        s.walk(legal);
+    }
+
+    pub fn legal_moves(&self, s: &G) -> Vec<Coordinate> {
         let moves_requested = s.moveset();
-        let allowed_moveset = self.filter_move_set(s, moves_requested);
-        s.walk(allowed_moveset);
+        self.filter_move_set(s, moves_requested)
     }
 }
