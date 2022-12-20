@@ -4,6 +4,7 @@ use hex2d::{Coordinate, Direction, Position};
 use hex2d::Direction::*;
 use hex2d::Angle::{Left, Right};
 use crate::cfg_fetch;
+use hexboard::Hextile;
 use crate::hexagonaltile::tile::HexagonalTile;
 use std::path::Path;
 
@@ -69,7 +70,7 @@ impl Arthropod {
         }
     }
 
-    pub fn is_legal_terrain(&self, t: HexagonalTile) -> bool {
+    pub fn is_legal_terrain(&self, t: &HexagonalTile) -> bool {
         let bf = BugFormation::new(self);
         bf.terrains.iter().filter(|&tx| *tx == t.terrain).count() > 0
         }

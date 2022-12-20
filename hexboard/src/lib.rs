@@ -16,17 +16,17 @@ pub trait Hextile {
     fn from_pixel(pixel: image::Rgba<u8>) -> Self;
 }
 
-pub trait GamePiece<H: Hextile> {
+pub trait GamePiece {
     fn position(&self) -> Position;
     fn moveset(&self) -> Vec<Position>;
-    fn is_legal(&self, t: &H) -> bool;
+    fn is_legal(&self, t: Box<dyn Hextile>) -> bool;
     fn walk(&mut self, move_set: Vec<Position>);
 }
 
 /// Interface for the drawing api
 pub trait TileFactory {
     type Tile: Hextile;
-    type Sprite: GamePiece<Self::Tile>;
+    type Sprite: GamePiece;
     fn draw_tile(&self, c: Coordinate, scale: f32, t: &Self::Tile);
     fn draw_sprite(&self, c: Coordinate, scale: f32, s: &Self::Sprite);
     fn display_board(&self, b: &Board<Self::Tile, Self::Sprite>, offset: (i32, i32));
@@ -41,14 +41,14 @@ struct ViewBoundary {
 }
 
 /// Maps hexagonal tiles by their axial coordinate.
-pub struct Board<H: Hextile, G: GamePiece<H>> {
+pub struct Board<H: Hextile, G: GamePiece> {
     pub tiles: BTreeMap<Coordinate, H>,
     pub pieces: Vec<G>,
     scale: f32,
     vb: ViewBoundary,
 }
 
-impl<H: Hextile, G: GamePiece<H>> Board<H, G> {
+impl<H: Hextile, G: GamePiece> Board<H, G> {
 
     /// Determines if a coordinate is in the viewing window
     pub fn is_viewable(&self, cd: Coordinate) -> bool {

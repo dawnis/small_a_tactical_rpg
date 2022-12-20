@@ -8,13 +8,13 @@ use image::GenericImageView;
 
 
 #[derive(Default, Copy, Clone)]
-pub struct BoardBuilder<H: Hextile, G: GamePiece<H>> {
+pub struct BoardBuilder<H: Hextile, G: GamePiece> {
     _tile: PhantomData<H>,
     _piece: PhantomData<G>,
     scale: f32,
 }
 
-impl<H: Hextile, G: GamePiece<H>> BoardBuilder<H, G> {
+impl<H: Hextile, G: GamePiece> BoardBuilder<H, G> {
     pub fn new() -> BoardBuilder<H, G> {
         BoardBuilder{_tile: PhantomData, _piece: PhantomData, scale: 25.}
     }

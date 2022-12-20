@@ -3,12 +3,12 @@ use std::marker::PhantomData;
 use hex2d::{Coordinate, Position};
 use crate::{Hextile, GamePiece};
 
-pub struct GController<'a, H: Hextile, G: GamePiece<H>> {
+pub struct GController<'a, H: Hextile, G: GamePiece> {
     tiles: &'a BTreeMap<Coordinate, H>,
     _piece: PhantomData<G>,
 }
 
-impl<'a, H: Hextile, G: GamePiece<H>> GController<'a, H, G> {
+impl<'a, H: Hextile, G: GamePiece> GController<'a, H, G> {
     pub fn new(tiles: &'a BTreeMap<Coordinate, H>) -> Self {
         GController {tiles, _piece: PhantomData}
     }
