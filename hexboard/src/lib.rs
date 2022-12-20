@@ -18,9 +18,9 @@ pub trait Hextile {
 
 pub trait GamePiece<H: Hextile> {
     fn position(&self) -> Position;
-    fn moveset(&self) -> Vec<Coordinate>;
+    fn moveset(&self) -> Vec<Position>;
     fn is_legal(&self, t: &H) -> bool;
-    fn walk(&mut self, move_set: Vec<Coordinate>);
+    fn walk(&mut self, move_set: Vec<Position>);
 }
 
 /// Interface for the drawing api

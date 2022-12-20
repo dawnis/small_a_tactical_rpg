@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 use std::marker::PhantomData;
-use hex2d::Coordinate;
+use hex2d::{Coordinate, Position};
 use crate::{Hextile, GamePiece};
 
 pub struct GController<'a, H: Hextile, G: GamePiece<H>> {
@@ -25,12 +25,15 @@ impl<'a, H: Hextile, G: GamePiece<H>> GController<'a, H, G> {
         sprite_allowed_tiles
     }
 
-    pub fn walk_sprite(&self, legal: Vec<Coordinate>, s: &mut G) {
+    pub fn walk_sprite(&self, legal: Vec<Position>, s: &mut G) {
         s.walk(legal);
     }
 
     pub fn legal_moves(&self, s: &G) -> Vec<Coordinate> {
-        let moves_requested = s.moveset();
+        let moves_requested = s.moveset().iter()
+                                         .map(|&x| x.coord)
+                                         .collect();
+
         self.filter_move_set(s, moves_requested)
     }
 }

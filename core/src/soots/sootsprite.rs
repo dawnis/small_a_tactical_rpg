@@ -71,19 +71,17 @@ impl<H: Hextile> GamePiece<H> for SootSprite {
         self.position
     }
 
-    fn moveset(&self) -> Vec<Coordinate> {
-        let possible_moves = self.stype.moves(self.position);
-        possible_moves.iter().map(|&x| x.coord).collect()
+    fn moveset(&self) -> Vec<Position> {
+        self.stype.moves(self.position)
     }
 
-    fn is_legal(&self, tile: H) -> bool {
+    fn is_legal(&self, tile: &H) -> bool {
         self.stype.is_legal_terrain(tile)
     }
 
-    fn walk(&mut self) {
-        let possible_moves = self.stype.moves(self.position);
+    fn walk(&mut self, move_set: Vec<Position>) {
         let mut rng = thread_rng();
-        let m = rng.gen_range(0..possible_moves.len());
-        self.position = possible_moves[m];
+        let m = rng.gen_range(0..move_set.len());
+        self.position = move_set[m];
     }
 }

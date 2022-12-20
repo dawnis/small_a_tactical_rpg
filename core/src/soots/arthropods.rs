@@ -58,6 +58,7 @@ impl Arthropod {
         match self {
             Arthropod::Wasp {reaction: _, vision: _}=> {
                 vec![
+                    p,
                     p + Left,
                     p + Right,
                     p + step(1, p.dir),
