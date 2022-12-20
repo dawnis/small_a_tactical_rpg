@@ -65,7 +65,7 @@ impl SootSprite {
     }
 }
 
-impl<H: Hextile> GamePiece<H> for SootSprite {
+impl GamePiece for SootSprite {
 
     fn position(&self) -> Position {
         self.position
@@ -73,10 +73,6 @@ impl<H: Hextile> GamePiece<H> for SootSprite {
 
     fn moveset(&self) -> Vec<Position> {
         self.stype.moves(self.position)
-    }
-
-    fn is_legal(&self, tile: &H) -> bool {
-        self.stype.is_legal_terrain(tile)
     }
 
     fn walk(&mut self, move_set: Vec<Position>) {

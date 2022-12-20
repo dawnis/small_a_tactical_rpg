@@ -5,6 +5,7 @@ mod factory;
 
 use nannou::prelude::*;
 use crate::logging::init_logging;
+use core::gamecontrol::GController;
 use core::Mrgb;
 use log::*;
 use hexboard::*;
@@ -76,7 +77,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let max_scale = 50.;
     let min_scale = 5.;
 
-    let game_controller = self.model.board.game_controller();
+    let game_controller = GController::new(model.board);
 
     for sprite in model.board.pieces.iter_mut() {
         if sprite.last_updated > sprite.stype.reaction_time() {

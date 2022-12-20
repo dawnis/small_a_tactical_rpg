@@ -3,9 +3,7 @@
 //! Hexboard is a library for coordinating hexagonal tile tracking and display. 
 
 pub mod builder;
-pub mod gamecontrol;
 
-use gamecontrol::GController;
 use hex2d::{Spacing, Coordinate, Position};
 use crate::builder::BoardBuilder;
 use std::collections::BTreeMap;
@@ -19,7 +17,6 @@ pub trait Hextile {
 pub trait GamePiece {
     fn position(&self) -> Position;
     fn moveset(&self) -> Vec<Position>;
-    fn is_legal(&self, t: Box<dyn Hextile>) -> bool;
     fn walk(&mut self, move_set: Vec<Position>);
 }
 
@@ -73,8 +70,5 @@ impl<H: Hextile, G: GamePiece> Board<H, G> {
         BoardBuilder::new()
     }
 
-    pub fn controller(&self) -> GController<H, G> {
-        GController::new(&self.tiles)
-    }
 
 }
