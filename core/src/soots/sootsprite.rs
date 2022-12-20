@@ -65,6 +65,12 @@ impl SootSprite {
     }
 }
 
+impl SootSprite {
+    pub fn legal_tile(&self, tile: &HexagonalTile) -> bool {
+        self.stype.is_legal_terrain(tile)
+    }
+}
+
 impl GamePiece for SootSprite {
 
     fn position(&self) -> Position {

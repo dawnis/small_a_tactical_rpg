@@ -10,11 +10,11 @@ use core::Mrgb;
 use log::*;
 use hexboard::*;
 use hexboard::builder::BoardBuilder;
-use hexagonaltile::tile::HexagonalTile;
-use factory::HextileFactory;
+use core::hexagonaltile::tile::HexagonalTile;
+use core::factory::HextileFactory;
 use std::path::Path;
-use crate::soots::sootsprite::SootSprite;
-use crate::soots::arthropods::Arthropod::*;
+use core::soots::sootsprite::SootSprite;
+use core::soots::arthropods::Arthropod::*;
 use core::{OPT, cfg_fetch};
 use hex2d::Direction::*;
 
@@ -77,9 +77,9 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let max_scale = 50.;
     let min_scale = 5.;
 
-    let game_controller = GController::new(model.board);
+    let game_controller = GController::new(&mut model.board);
 
-    for sprite in model.board.pieces.iter_mut() {
+    for sprite in model.board.pieces.iter() {
         if sprite.last_updated > sprite.stype.reaction_time() {
             sprite.last_updated = 0.;
             let legal_moveset = game_controller.legal_moves(sprite);

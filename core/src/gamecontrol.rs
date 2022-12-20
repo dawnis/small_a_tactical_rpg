@@ -1,24 +1,29 @@
 use hex2d::{Coordinate, Position};
-use hexboard::Board;
+use hexboard::{GamePiece, Board};
 use crate::hexagonaltile::tile::HexagonalTile;
 use crate::soots::sootsprite::SootSprite;
 
-pub struct GController {
-    pub board: Board<HexagonalTile, SootSprite>
+pub struct GController<'a> {
+    pub board: &'a mut Board<HexagonalTile, SootSprite>
 }
 
-impl GController {
-    pub fn new(board: Board<HexagonalTile, SootSprite>) -> Self {
+impl<'a> GController<'a> {
+    pub fn new(board: &'a mut Board<HexagonalTile, SootSprite>) -> Self {
         GController { board }
     }
 
-    pub fn filter_move_set(&self, s: &SootSprite, requested: Vec<Coordinate>) -> Vec<Coordinate> {
+    pub fn filter_move_set(&self, s: &SootSprite, requested: Vec<Position>) -> Vec<Position> {
 
         //1st make sure all requested coordinates are actually keyed
-        let on_board_coordinates: Vec<Coordinate> = requested.iter().cloned().filter(|&x| self.board.tiles.get(&x).is_some()).collect();
+        let on_board_coordinates: Vec<Position> = requested.iter().cloned().filter(|&x| self.board.tiles
+                                                                                   .get(&x.coord)
+                                                                                   .is_some())
+                                                                                   .collect();
 
         //2nd check if the tile at each coordinate is allowed by the walk_sprite
-        let sprite_allowed_tiles: Vec<Coordinate> = on_board_coordinates.iter().cloned().filter(|&x| s.is_legal(self.board.tiles.get(&x).unwrap())).collect();
+        let sprite_allowed_tiles: Vec<Position> = on_board_coordinates.iter()
+                                                                      .cloned()
+                                                                      .filter(|&x| s.legal_tile(self.board.tiles.get(&x.coord).unwrap())).collect();
 
         //return vec<coordinate> of allowed moves
         sprite_allowed_tiles
@@ -28,11 +33,7 @@ impl GController {
         s.walk(legal);
     }
 
-    pub fn legal_moves(&self, s: &SootSprite) -> Vec<Coordinate> {
-        let moves_requested = s.moveset().iter()
-                                         .map(|&x| x.coord)
-                                         .collect();
-
-        self.filter_move_set(s, moves_requested)
+    pub fn legal_moves(&self, s: &SootSprite) -> Vec<Position> {
+        self.filter_move_set(s, s.moveset())
     }
 }
