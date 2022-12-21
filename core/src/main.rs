@@ -133,9 +133,14 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
+
     let draw = app.draw();
+
     let htf = HextileFactory::new(Some(&draw));
+
     htf.display_board(&model.board, model.world_offset);
+
     draw.background().color(BEIGE);
+
     draw.to_frame(app, &frame).unwrap();
 }

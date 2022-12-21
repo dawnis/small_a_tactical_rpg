@@ -4,7 +4,6 @@ use hex2d::{Coordinate, Direction, Position};
 use hex2d::Direction::*;
 use hex2d::Angle::{Left, Right};
 use crate::cfg_fetch;
-use hexboard::Hextile;
 use crate::hexagonaltile::tile::HexagonalTile;
 use std::path::Path;
 

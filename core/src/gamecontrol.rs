@@ -1,4 +1,4 @@
-use hex2d::{Coordinate, Position};
+use hex2d::Position;
 use hexboard::{GamePiece, Board};
 use crate::hexagonaltile::tile::HexagonalTile;
 use crate::soots::sootsprite::SootSprite;
