@@ -17,6 +17,7 @@ use core::soots::sootsprite::SootSprite;
 use core::soots::arthropods::Arthropod::*;
 use core::{OPT, cfg_fetch};
 use hex2d::Direction::*;
+use hex2d::Position;
 
 fn main() {
     init_logging(OPT.verbosity);
@@ -77,17 +78,23 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let max_scale = 50.;
     let min_scale = 5.;
 
-    let game_controller = GController::new(&mut model.board);
 
-    for sprite in model.board.pieces.iter() {
+    let mut legal_moves_vec: Vec<Vec<Position>> = Vec::new();
+
+    let game_controller0 = GController::new(&mut model.board);
+    for sprite in game_controller0.chars().iter() {
+        legal_moves_vec.push(game_controller0.legal_moves(sprite));
+    }
+
+    let mut game_controller1 = GController::new(&mut model.board);
+    for sprite in game_controller1.mchars().iter() {
         if sprite.last_updated > sprite.stype.reaction_time() {
             sprite.last_updated = 0.;
-            let legal_moveset = game_controller.legal_moves(sprite);
-            game_controller.walk_sprite(legal_moveset, sprite);
+            let legal_moves = &legal_moves_vec[0];
+            game_controller1.walk_sprite(legal_moves.to_vec(), sprite);
         } else {
             sprite.last_updated += app.duration.since_prev_update.ms();
         }
-
     }
 
 

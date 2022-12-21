@@ -39,13 +39,30 @@ struct ViewBoundary {
 
 /// Maps hexagonal tiles by their axial coordinate.
 pub struct Board<H: Hextile, G: GamePiece> {
-    pub tiles: BTreeMap<Coordinate, H>,
-    pub pieces: Vec<G>,
+    tiles: BTreeMap<Coordinate, H>,
+    pieces: Vec<G>,
     scale: f32,
     vb: ViewBoundary,
 }
 
 impl<H: Hextile, G: GamePiece> Board<H, G> {
+
+    pub fn get_tiles(&self) -> &BTreeMap<Coordinate, H> {
+        &self.tiles
+    }
+
+    pub fn get_mut_tiles(&mut self) -> &BTreeMap<Coordinate, H> {
+        &mut self.tiles
+    }
+
+    pub fn get_pieces(&self) -> &Vec<G> {
+        &self.pieces
+    }
+
+    pub fn get_mut_pieces(&mut self) -> &Vec<G> {
+        &mut self.pieces
+    }
+
 
     /// Determines if a coordinate is in the viewing window
     pub fn is_viewable(&self, cd: Coordinate) -> bool {
