@@ -56,8 +56,8 @@ fn model(app: &App) -> Model {
 
     let wasp_vec = vec![
         SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 5), XY, Wasp{vision, reaction}), 
-        SootSprite::new(app, (5, 0), ZX, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
     ];
 
     for w in wasp_vec {
@@ -81,13 +81,15 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
     let mut legal_moves_vec: Vec<Vec<Position>> = Vec::new();
 
-    let game_controller0 = GController::new(&mut model.board);
-    for sprite in game_controller0.board.pieces.iter() {
-        legal_moves_vec.push(game_controller0.legal_moves(sprite));
+    let gc0 = GController::new(&mut model.board);
+    for sprite in gc0.board.pieces.iter() {
+        let moves = gc0.legal_moves(sprite);
+        //debug!("{:?}", moves);
+        legal_moves_vec.push(moves);
     }
 
-    let game_controller1 = GController::new(&mut model.board);
-    for (i, sprite) in game_controller1.board.pieces.iter_mut().enumerate() {
+    let gc1 = GController::new(&mut model.board);
+    for (i, sprite) in gc1.board.pieces.iter_mut().enumerate() {
         if sprite.last_updated > sprite.stype.reaction_time() {
             sprite.last_updated = 0.;
             let legal_moves = legal_moves_vec[i].to_vec();
@@ -135,10 +137,5 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let htf = HextileFactory::new(Some(&draw));
     htf.display_board(&model.board, model.world_offset);
     draw.background().color(BEIGE);
-
-    //let r = Rect::from_w_h(model.board.scale(), model.board.scale());
-    //draw.texture(&model.wasp)
-    //     .wh(r.wh());
-
     draw.to_frame(app, &frame).unwrap();
 }
