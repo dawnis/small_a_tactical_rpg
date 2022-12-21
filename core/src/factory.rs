@@ -35,14 +35,14 @@ impl<'a> TileFactory for HextileFactory<'a> {
     fn display_board(&self, board: &Board<HexagonalTile, SootSprite>, offset: (i32, i32)) {
         let offset_as_coordinate = Coordinate::new(offset.0, offset.1);
 
-        for (loc, tile) in board.get_tiles().iter() {
+        for (loc, tile) in board.tiles.iter() {
             let oc = *loc + offset_as_coordinate;
             if board.is_viewable(oc) {
                     self.draw_tile(oc, board.scale(), tile);
                }
         }
 
-        for sprite in board.get_pieces().iter() {
+        for sprite in board.pieces.iter() {
             self.draw_sprite(offset_as_coordinate, board.scale(), sprite);
         }
     }
