@@ -32,10 +32,6 @@ impl<'a> GController<'a> {
         sprite_allowed_tiles
     }
 
-    pub fn walk_sprite(&self, legal: Vec<Position>, s: &mut SootSprite) {
-        s.walk(legal);
-    }
-
     pub fn legal_moves(&self, s: &SootSprite) -> Vec<Position> {
         self.filter_move_set(s, s.moveset())
     }

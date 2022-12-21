@@ -2,7 +2,7 @@ use nannou::prelude::*;
 use crate::hexagonaltile::tile::HexagonalTile;
 use rand::{thread_rng, Rng};
 use hex2d::{Coordinate, Position, Direction, Spacing};
-use hexboard::{GamePiece, Hextile};
+use hexboard::GamePiece;
 use crate::soots::arthropods::Arthropod;
 use crate::OPT;
 

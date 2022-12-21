@@ -58,6 +58,14 @@ fn model(app: &App) -> Model {
         SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
         SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
         SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
+        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
     ];
 
     for w in wasp_vec {
