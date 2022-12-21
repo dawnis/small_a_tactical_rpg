@@ -8,6 +8,7 @@ use log::*;
 pub mod hexagonaltile;
 pub mod soots;
 pub mod factory;
+pub mod gamecontrol;
 
 ///Small, a tactical RPG Game
 #[derive(StructOpt, Debug)]

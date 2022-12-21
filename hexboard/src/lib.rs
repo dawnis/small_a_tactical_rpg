@@ -16,7 +16,8 @@ pub trait Hextile {
 
 pub trait GamePiece {
     fn position(&self) -> Position;
-    fn walk(&mut self);
+    fn moveset(&self) -> Vec<Position>;
+    fn walk(&mut self, move_set: Vec<Position>);
 }
 
 /// Interface for the drawing api
@@ -45,6 +46,7 @@ pub struct Board<H: Hextile, G: GamePiece> {
 }
 
 impl<H: Hextile, G: GamePiece> Board<H, G> {
+
     /// Determines if a coordinate is in the viewing window
     pub fn is_viewable(&self, cd: Coordinate) -> bool {
         let hpc = cd.to_pixel(Spacing::FlatTop(self.scale));
@@ -67,7 +69,6 @@ impl<H: Hextile, G: GamePiece> Board<H, G> {
     pub fn builder() -> BoardBuilder<H, G> {
         BoardBuilder::new()
     }
-
 
 
 }

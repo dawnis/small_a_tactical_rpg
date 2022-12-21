@@ -58,6 +58,7 @@ impl Arthropod {
         match self {
             Arthropod::Wasp {reaction: _, vision: _}=> {
                 vec![
+                    p,
                     p + Left,
                     p + Right,
                     p + step(1, p.dir),
@@ -68,7 +69,7 @@ impl Arthropod {
         }
     }
 
-    pub fn is_legal_terrain(&self, t: HexagonalTile) -> bool {
+    pub fn is_legal_terrain(&self, t: &HexagonalTile) -> bool {
         let bf = BugFormation::new(self);
         bf.terrains.iter().filter(|&tx| *tx == t.terrain).count() > 0
         }
