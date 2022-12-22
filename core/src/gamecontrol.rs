@@ -1,38 +1,50 @@
-use hex2d::Position;
-use hexboard::{GamePiece, Board};
+use hexboard::Board;
+use nannou::prelude::*;
 use crate::hexagonaltile::tile::HexagonalTile;
 use crate::soots::sootsprite::SootSprite;
+use crate::soots::arthropods::Arthropod;
+use std::collections::BTreeMap;
+use crate::gamecontrol::movement::SpriteMovement;
+use std::cell::RefCell;
 
-pub struct GController<'a> {
-    pub board: &'a mut Board<HexagonalTile, SootSprite>,
+mod movement;
+
+pub struct GController {
+    pub board: Board<HexagonalTile>,
+    pub bugs: Vec<RefCell<SootSprite>>,
+    pub heros: BTreeMap<String, SootSprite>,
 }
 
-impl<'a> GController<'a> {
+impl GController {
 
-    pub fn new(board: &'a mut Board<HexagonalTile, SootSprite>) -> Self {
+    pub fn new(board: Board<HexagonalTile>) -> Self {
         GController { 
             board,
+            bugs: Vec::new(),
+            heros: BTreeMap::new(),
         }
     }
 
-    pub fn filter_move_set(&self, s: &SootSprite, requested: Vec<Position>) -> Vec<Position> {
 
-        //1st make sure all requested coordinates are actually keyed
-        let on_board_coordinates: Vec<Position> = requested.iter().cloned().filter(|&x| self.board.tiles
-                                                                                   .get(&x.coord)
-                                                                                   .is_some())
-                                                                                   .collect();
-
-        //2nd check if the tile at each coordinate is allowed by the walk_sprite
-        let sprite_allowed_tiles: Vec<Position> = on_board_coordinates.iter()
-                                                                      .cloned()
-                                                                      .filter(|&x| s.legal_tile(self.board.tiles.get(&x.coord).unwrap())).collect();
-
-        //return vec<coordinate> of allowed moves
-        sprite_allowed_tiles
+    pub fn place(&mut self, new_piece: SootSprite) {
+        match new_piece.stype {
+            Arthropod::Hero{ref name } => {
+                self.heros.insert(name.to_string(), new_piece);
+            },
+            _ => self.bugs.push(RefCell::new(new_piece)),
+        };
     }
 
-    pub fn legal_moves(&self, s: &SootSprite) -> Vec<Position> {
-        self.filter_move_set(s, s.moveset())
+    pub fn update_bugs(&mut self, app: &App) {
+        for sprite in self.bugs.iter() {
+            if sprite.borrow().last_updated > sprite.borrow().stype.reaction_time() {
+                sprite.borrow_mut().last_updated = 0.;
+                self.walk(sprite);
+            } else {
+                sprite.borrow_mut().last_updated += app.duration.since_prev_update.ms();
+            }
+        }
     }
+
+
 }
