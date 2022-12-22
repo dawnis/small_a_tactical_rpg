@@ -76,6 +76,10 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
     model.gctl.update_bugs(app);
 
+    if app.keys.down.contains(&Key::S) {
+        model.gctl.command_hero(app, "jak");
+    }
+
     if app.keys.down.contains(&Key::C) {
         model.world_offset = (0, 0)
     }

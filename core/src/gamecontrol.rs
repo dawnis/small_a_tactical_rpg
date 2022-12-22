@@ -22,7 +22,6 @@ impl GController {
         }
     }
 
-
     pub fn place(&mut self, piece: SootSprite) {
         self.sprites.push(RefCell::new(piece));
     }
@@ -34,6 +33,17 @@ impl GController {
                 self.walk(sprite);
             } else {
                 sprite.borrow_mut().last_updated += app.duration.since_prev_update.ms();
+            }
+        }
+    }
+
+    pub fn command_hero(&mut self, app: &App, hero_name: &str) {
+        for hero in self.sprites.iter().filter(|&s| s.borrow().stype == Arthropod::Hero{name: String::from(hero_name)}) {
+            if hero.borrow().last_updated > hero.borrow().stype.reaction_time() {
+                hero.borrow_mut().last_updated = 0.;
+                self.walk(hero);
+            } else {
+                hero.borrow_mut().last_updated += app.duration.since_prev_update.ms();
             }
         }
     }
