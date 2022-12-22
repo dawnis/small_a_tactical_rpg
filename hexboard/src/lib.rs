@@ -7,6 +7,7 @@ pub mod builder;
 use hex2d::{Spacing, Coordinate, Position};
 use crate::builder::BoardBuilder;
 use std::collections::BTreeMap;
+use std::cell::RefCell;
 
 /// Interface for hexagonal tiles
 pub trait Hextile {
@@ -24,7 +25,7 @@ pub trait TileFactory {
     type Sprite: GamePiece;
     fn draw_tile(&self, c: Coordinate, scale: f32, t: &Self::Tile);
     fn draw_sprite(&self, c: Coordinate, scale: f32, s: &Self::Sprite);
-    fn display_board(&self, b: &Board<Self::Tile>, offset: (i32, i32));
+    fn display_board(&self, b: &Board<Self::Tile>, s: &[RefCell<Self::Sprite>], offset: (i32, i32));
 }
 
 #[derive(Default, Clone, Copy)]
