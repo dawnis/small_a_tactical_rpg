@@ -6,7 +6,7 @@ pub trait SpriteMovement {
     fn legal_moves(&self, s: &SootSprite) -> Vec<Position>;
     fn filter_move_set(&self, s: &SootSprite, requested: Vec<Position>) -> Vec<Position>;
     fn walk(&self, s: &RefCell<SootSprite>);
-    fn command_move(&self, s: &RefCell<SootSprite>);
+    fn command_move(&self, s: &RefCell<SootSprite>, cmd: usize);
 }
 
 impl SpriteMovement for GController {
@@ -16,9 +16,9 @@ impl SpriteMovement for GController {
         s.borrow_mut().walk(legal_move_set);
     }
 
-    fn command_move(&self, s: &RefCell<SootSprite>) {
+    fn command_move(&self, s: &RefCell<SootSprite>, cmd: usize) {
         let legal_move_set = self.legal_moves(&s.borrow());
-        s.borrow_mut().command(legal_move_set);
+        s.borrow_mut().command(legal_move_set, cmd);
     }
 
     fn legal_moves(&self, s: &SootSprite) -> Vec<Position> {

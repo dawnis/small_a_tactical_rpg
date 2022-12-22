@@ -58,7 +58,7 @@ fn model(app: &App) -> Model {
         gctl.place(w);
     }
 
-    gctl.place(SootSprite::new(app, (-10, 0), YZ, Hero{name: String::from("jak")}));
+    gctl.place(SootSprite::new(app, (-10, 0), ZY, Hero{name: String::from("jak")}));
 
     Model {
         _window,
@@ -77,7 +77,27 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     model.gctl.update_bugs(app);
 
     if app.keys.down.contains(&Key::S) {
-        model.gctl.command_hero(app, "jak");
+        model.gctl.command_hero(app, "jak", 0);
+    }
+
+    if app.keys.down.contains(&Key::A) {
+        model.gctl.command_hero(app, "jak", 1);
+    }
+
+    if app.keys.down.contains(&Key::Q) {
+        model.gctl.command_hero(app, "jak", 2);
+    }
+
+    if app.keys.down.contains(&Key::W) {
+        model.gctl.command_hero(app, "jak", 3);
+    }
+
+    if app.keys.down.contains(&Key::E) {
+        model.gctl.command_hero(app, "jak", 4);
+    }
+
+    if app.keys.down.contains(&Key::D) {
+        model.gctl.command_hero(app, "jak", 5);
     }
 
     if app.keys.down.contains(&Key::C) {
