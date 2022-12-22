@@ -69,6 +69,17 @@ impl SootSprite {
     pub fn legal_tile(&self, tile: &HexagonalTile) -> bool {
         self.stype.is_legal_terrain(tile)
     }
+
+    pub fn moveset(&self) -> Vec<Position> {
+        self.stype.moves(self.position)
+    }
+
+    pub fn walk(&mut self, move_set: Vec<Position>) {
+        let mut rng = thread_rng();
+        let m = rng.gen_range(0..move_set.len());
+        self.position = move_set[m];
+    }
+
 }
 
 impl GamePiece for SootSprite {
@@ -77,13 +88,4 @@ impl GamePiece for SootSprite {
         self.position
     }
 
-    fn moveset(&self) -> Vec<Position> {
-        self.stype.moves(self.position)
-    }
-
-    fn walk(&mut self, move_set: Vec<Position>) {
-        let mut rng = thread_rng();
-        let m = rng.gen_range(0..move_set.len());
-        self.position = move_set[m];
-    }
 }

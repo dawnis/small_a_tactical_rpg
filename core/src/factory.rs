@@ -27,12 +27,8 @@ impl<'a> TileFactory for HextileFactory<'a> {
         s.draw(self.api.unwrap(),scale, off);
     }
 
-    //fn from_pixel(&self, scale: f32, pixel: Rgba<u8>) -> HexagonalTile {
-    //   HexagonalTile::from_pixel(self.api, edge, pixel)
-    //}
-
     /// Draws the board using nannou.
-    fn display_board(&self, board: &Board<HexagonalTile>, offset: (i32, i32)) {
+    fn display_board(&self, board: &Board<HexagonalTile>, sprites: &[SootSprite], offset: (i32, i32)) {
         let offset_as_coordinate = Coordinate::new(offset.0, offset.1);
 
         for (loc, tile) in board.tiles.iter() {
@@ -42,7 +38,7 @@ impl<'a> TileFactory for HextileFactory<'a> {
                }
         }
 
-        for sprite in board.pieces.iter() {
+        for sprite in sprites.iter() {
             self.draw_sprite(offset_as_coordinate, board.scale(), sprite);
         }
     }

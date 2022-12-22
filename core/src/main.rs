@@ -74,27 +74,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let max_scale = 50.;
     let min_scale = 5.;
 
-
-    let mut legal_moves_vec: Vec<Vec<Position>> = Vec::new();
-
-    let gc0 = GController::new(&mut model.board);
-    for sprite in gc0.board.pieces.iter().filter(|&x| x.stype == Wasp{}) {
-        let moves = gc0.legal_moves(sprite);
-        //debug!("{:?}", moves);
-        legal_moves_vec.push(moves);
-    }
-
-    let gc1 = GController::new(&mut model.board);
-    for (i, sprite) in gc1.board.pieces.iter_mut().filter(|x| x.stype == Wasp{}).enumerate() {
-        if sprite.last_updated > sprite.stype.reaction_time() {
-            sprite.last_updated = 0.;
-            let legal_moves = legal_moves_vec[i].to_vec();
-            sprite.walk(legal_moves);
-        } else {
-            sprite.last_updated += app.duration.since_prev_update.ms();
-        }
-    }
-
+    gctl.update_bugs(app);
 
     if app.keys.down.contains(&Key::C) {
         model.world_offset = (0, 0)
@@ -134,7 +114,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     let htf = HextileFactory::new(Some(&draw));
 
-    htf.display_board(&model.board, model.world_offset);
+    htf.display_board(&model.gctl.board, &model.gctl.bugs, model.world_offset);
 
     draw.background().color(BEIGE);
 
