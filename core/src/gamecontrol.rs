@@ -41,7 +41,7 @@ impl GController {
         for hero in self.sprites.iter().filter(|&s| s.borrow().stype == Arthropod::Hero{name: String::from(hero_name)}) {
             if hero.borrow().last_updated > hero.borrow().stype.reaction_time() {
                 hero.borrow_mut().last_updated = 0.;
-                self.walk(hero);
+                self.command_move(hero);
             } else {
                 hero.borrow_mut().last_updated += app.duration.since_prev_update.ms();
             }

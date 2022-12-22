@@ -80,6 +80,10 @@ impl SootSprite {
         self.position = move_set[m];
     }
 
+    pub fn command(&mut self, legal: Vec<Position>) {
+        self.position = legal[2];
+    }
+
 }
 
 impl GamePiece for SootSprite {
