@@ -28,11 +28,17 @@ struct BugFormation {
 impl BugFormation {
     pub fn new( bug: &Arthropod ) -> Self {
         match bug {
-            Arthropod::Wasp {reaction, vision} => BugFormation { 
+            Arthropod::Wasp {} => BugFormation { 
                 name: String::from("wasp"), 
                 terrains: vec![Air, Wood, Earth],
-                reaction: *reaction,
-                vision: *vision, 
+                reaction: 200.,
+                vision: 4u32, 
+            },
+            Arthropod::Hero {} => BugFormation { 
+                name: String::from("hero"), 
+                terrains: vec![Wood, Earth, Veg, Void],
+                reaction: 200.,
+                vision: 9u32, 
             }
         }
     }
@@ -41,7 +47,8 @@ impl BugFormation {
 /// arthropods define enemy types
 #[derive(Debug, Clone, Copy)]
 pub enum Arthropod {
-    Wasp{reaction: f64, vision: u32},
+    Wasp{},
+    Hero{},
 }
 
 /// Picks up the texture for each type
@@ -56,7 +63,7 @@ impl Arthropod {
 
     pub fn moves(&self, p: Position) -> Vec<Position> {
         match self {
-            Arthropod::Wasp {reaction: _, vision: _}=> {
+            Arthropod::Wasp{}=> {
                 vec![
                     p,
                     p + Left,
@@ -65,6 +72,14 @@ impl Arthropod {
                     p + step(1, p.dir + Right) + Right,
                     p + step(1, p.dir + Left) + Left,
                 ]
+            }
+            Arthropod::Hero{} => {
+                let mut tf = vec![p + Left, p + Right];
+                let mut mv: Vec<Position> = p.coord.neighbors()
+                                                      .map(|x| Position::new(x, p.dir))
+                                                      .to_vec();
+                tf.append(&mut mv);
+                tf
             }
         }
     }
@@ -75,14 +90,14 @@ impl Arthropod {
         }
 
     pub fn reaction_time(&self) -> f64 {
-        match self {
-            Arthropod::Wasp { reaction, vision: _ } => *reaction,
-        }
+        let bf = BugFormation::new(self);
+        bf.reaction
     }
 
     fn to_config(self) -> String {
         "sprites.".to_owned() + match self {
-            Arthropod::Wasp { reaction: _, vision: _ } => "wasp",
+            Arthropod::Wasp {} => "wasp",
+            Arthropod::Hero {} => "sed",
         }
 
     }

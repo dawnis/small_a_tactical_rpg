@@ -51,26 +51,13 @@ fn model(app: &App) -> Model {
          _ => panic!("Unable to choose map generation option")
     };
 
-    let vision = 4u32;
-    let reaction = 200.;
-
-    let wasp_vec = vec![
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-        SootSprite::new(app, (0, 0), YZ, Wasp{vision, reaction}), 
-    ];
+    let wasp_vec: Vec<SootSprite> = (0..9).map(|_| SootSprite::new(app, (0, 0), YZ, Wasp{})).collect();
 
     for w in wasp_vec {
         board.place(w);
     }
+
+    board.place(SootSprite::new(app, (-10, 0), YZ, Hero{}));
 
     Model {
         _window,
