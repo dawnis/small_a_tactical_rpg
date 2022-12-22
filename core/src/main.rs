@@ -26,7 +26,7 @@ fn main() {
 
 struct Model {
     _window: window::Id,
-    pub board: Board<HexagonalTile, SootSprite>,
+    pub gctl: GController, 
     pub world_offset: (i32, i32),
 }
 
@@ -44,24 +44,25 @@ fn model(app: &App) -> Model {
     let app_rect = app.window_rect();
     let app_rect_as_tuple = (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom());
 
-    //let htf = HextileFactory::new(None);
     let mut board = match OPT.generate_method.as_str() {
         "image" => BoardBuilder::new().map_image_px(&image_pth, app_rect_as_tuple),
         "platform" => BoardBuilder::new().island_c(20, (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom())),
          _ => panic!("Unable to choose map generation option")
     };
 
+    let gctl = GController::new(board);
+
     let wasp_vec: Vec<SootSprite> = (0..9).map(|_| SootSprite::new(app, (0, 0), YZ, Wasp{})).collect();
 
     for w in wasp_vec {
-        board.place(w);
+        gctl.place(w);
     }
 
-    board.place(SootSprite::new(app, (-10, 0), YZ, Hero{name: String::from("jak")}));
+    gctl.place(SootSprite::new(app, (-10, 0), YZ, Hero{name: String::from("jak")}));
 
     Model {
         _window,
-        board,
+        gctl,
         world_offset: (0, 0),
     }
 }

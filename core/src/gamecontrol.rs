@@ -1,17 +1,33 @@
 use hex2d::Position;
-use hexboard::{GamePiece, Board};
+use hexboard::Board;
 use crate::hexagonaltile::tile::HexagonalTile;
 use crate::soots::sootsprite::SootSprite;
+use crate::soots::arthropods::Arthropod;
+use std::collections::BTreeMap;
 
-pub struct GController<'a> {
-    pub board: &'a mut Board<HexagonalTile, SootSprite>,
+pub struct GController {
+    pub board: Board<HexagonalTile>,
+    pub bugs: Vec<SootSprite>,
+    pub heros: BTreeMap<String, SootSprite>,
 }
 
-impl<'a> GController<'a> {
+impl GController {
 
-    pub fn new(board: &'a mut Board<HexagonalTile, SootSprite>) -> Self {
+    pub fn place(&mut self, new_piece: SootSprite) {
+        match new_piece.stype {
+            Arthropod::Hero{ name } => {
+                self.heros.insert(name, new_piece);
+            },
+            _ => self.bugs.push(new_piece),
+        };
+    }
+
+
+    pub fn new(board: Board<HexagonalTile>) -> Self {
         GController { 
             board,
+            bugs: Vec::new(),
+            heros: BTreeMap::new(),
         }
     }
 

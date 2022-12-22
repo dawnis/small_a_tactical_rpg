@@ -1,5 +1,5 @@
 use std::marker::PhantomData;
-use crate::{Board, Hextile, GamePiece, ViewBoundary};
+use crate::{Board, Hextile, ViewBoundary};
 use hex2d::{Coordinate, Spin, XY};
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -8,18 +8,17 @@ use image::GenericImageView;
 
 
 #[derive(Default, Copy, Clone)]
-pub struct BoardBuilder<H: Hextile, G: GamePiece> {
+pub struct BoardBuilder<H: Hextile> {
     _tile: PhantomData<H>,
-    _piece: PhantomData<G>,
     scale: f32,
 }
 
-impl<H: Hextile, G: GamePiece> BoardBuilder<H, G> {
-    pub fn new() -> BoardBuilder<H, G> {
-        BoardBuilder{_tile: PhantomData, _piece: PhantomData, scale: 25.}
+impl<H: Hextile> BoardBuilder<H> {
+    pub fn new() -> BoardBuilder<H> {
+        BoardBuilder{_tile: PhantomData, scale: 25.}
     }
 
-    pub fn map_image_px(&self, pixel_file: &Path, app_window: (f32, f32, f32, f32)) -> Board<H, G> {
+    pub fn map_image_px(&self, pixel_file: &Path, app_window: (f32, f32, f32, f32)) -> Board<H> {
         let (width, height) = image::image_dimensions(pixel_file).unwrap();
 
         let mut cx: Vec<(Coordinate, image::Rgba<u8>)> = Vec::new();
@@ -39,7 +38,6 @@ impl<H: Hextile, G: GamePiece> BoardBuilder<H, G> {
             tiles: Self::pix2bmap(cx),
             vb: ViewBoundary { left: app_window.0, right: app_window.1, top: app_window.2, bottom: app_window.3 },
             scale: self.scale,
-            pieces: Vec::new(),
         }
     }
 
@@ -53,7 +51,7 @@ impl<H: Hextile, G: GamePiece> BoardBuilder<H, G> {
         game_board
     }
 
-    pub fn island_c(&self, num_layers: i32, app_window: (f32, f32, f32, f32)) -> Board<H, G> {
+    pub fn island_c(&self, num_layers: i32, app_window: (f32, f32, f32, f32)) -> Board<H> {
         assert!(num_layers > 0);
         let mut game_board = BTreeMap::new();
 
@@ -80,7 +78,6 @@ impl<H: Hextile, G: GamePiece> BoardBuilder<H, G> {
                                                    right: app_window.1,
                                                    top: app_window.2,
                                                    bottom: app_window.3},
-              pieces: Vec::new(),
         }
     }
 }
