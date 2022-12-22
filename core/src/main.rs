@@ -114,7 +114,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     let htf = HextileFactory::new(Some(&draw));
 
-    htf.display_board(&model.gctl.board, &model.gctl.bugs, model.world_offset);
+    htf.display_board(&model.gctl.board, &model.gctl.sprites, model.world_offset);
 
     draw.background().color(BEIGE);
 
