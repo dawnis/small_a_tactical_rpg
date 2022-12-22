@@ -57,7 +57,7 @@ fn model(app: &App) -> Model {
         board.place(w);
     }
 
-    board.place(SootSprite::new(app, (-10, 0), YZ, Hero{}));
+    board.place(SootSprite::new(app, (-10, 0), YZ, Hero{name: String::from("jak")}));
 
     Model {
         _window,
@@ -77,14 +77,14 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     let mut legal_moves_vec: Vec<Vec<Position>> = Vec::new();
 
     let gc0 = GController::new(&mut model.board);
-    for sprite in gc0.board.pieces.iter() {
+    for sprite in gc0.board.pieces.iter().filter(|&x| x.stype == Wasp{}) {
         let moves = gc0.legal_moves(sprite);
         //debug!("{:?}", moves);
         legal_moves_vec.push(moves);
     }
 
     let gc1 = GController::new(&mut model.board);
-    for (i, sprite) in gc1.board.pieces.iter_mut().enumerate() {
+    for (i, sprite) in gc1.board.pieces.iter_mut().filter(|x| x.stype == Wasp{}).enumerate() {
         if sprite.last_updated > sprite.stype.reaction_time() {
             sprite.last_updated = 0.;
             let legal_moves = legal_moves_vec[i].to_vec();

@@ -18,7 +18,7 @@ impl SootSprite {
 
     pub fn new(app: &App, loc: (i32, i32), orient: Direction, stype: Arthropod) -> Self {
         SootSprite { 
-            stype,
+            stype: stype.clone(),
             position: Position::new(Coordinate::new(loc.0, loc.1), orient),
             last_updated: 0.0,
             texture: stype.to_texture(app),
