@@ -80,8 +80,8 @@ impl Arthropod {
                     let q = p + Left + Left;
                     let b = p + Right + Right;
                     vec![
-                        p + Left,
-                        p + Right,
+                        p,
+                        p,
                         p + step(1, p.dir) + step(1, p.dir + Right),
                         p + step(1, p.dir) + step(1, p.dir + Left),
                         p + step(1, q.dir) + step(1, q.dir + Right),
@@ -90,8 +90,22 @@ impl Arthropod {
                         p + step(1, b.dir) + step(1, b.dir + Left),
                     ]
                 }
+                else if name == "mag" {
+                    let q = p + Left + Left;
+                    let b = p + Right + Right;
+                    vec![
+                        p,
+                        p,
+                        p + step(3, p.dir),
+                        p + step(1, p.dir + Left),
+                        p + step(3, q.dir),
+                        p + step(-1, p.dir),
+                        p + step(3, b.dir),
+                        p + step(1, p.dir + Right),
+                    ]
+                }
                 else {
-                    let mut tf = vec![p + Left, p + Right];
+                    let mut tf = vec![p, p];
                     let mut mv: Vec<Position> = p.coord.neighbors()
                                                           .map(|x| Position::new(x, p.dir))
                                                           .to_vec();

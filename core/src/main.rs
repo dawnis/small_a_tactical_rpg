@@ -87,28 +87,38 @@ fn update(app: &App, model: &mut Model, _update: Update) {
         }
     }
 
-    if app.keys.down.contains(&Key::S) {
+    // Turn left/right keys for Heros
+    if app.keys.down.contains(&Key::Z) {
         model.gctl.command_hero(app, &focus_hero, 0);
     }
 
-    if app.keys.down.contains(&Key::D) {
+    if app.keys.down.contains(&Key::X) {
         model.gctl.command_hero(app, &focus_hero, 1);
     }
 
-    if app.keys.down.contains(&Key::E) {
+    // Move Keys for heros
+    if app.keys.down.contains(&Key::S) {
         model.gctl.command_hero(app, &focus_hero, 2);
     }
 
-    if app.keys.down.contains(&Key::W) {
+    if app.keys.down.contains(&Key::D) {
         model.gctl.command_hero(app, &focus_hero, 3);
     }
 
-    if app.keys.down.contains(&Key::Q) {
+    if app.keys.down.contains(&Key::E) {
         model.gctl.command_hero(app, &focus_hero, 4);
     }
 
-    if app.keys.down.contains(&Key::A) {
+    if app.keys.down.contains(&Key::W) {
         model.gctl.command_hero(app, &focus_hero, 5);
+    }
+
+    if app.keys.down.contains(&Key::Q) {
+        model.gctl.command_hero(app, &focus_hero, 6);
+    }
+
+    if app.keys.down.contains(&Key::A) {
+        model.gctl.command_hero(app, &focus_hero, 7);
     }
 
     if app.keys.down.contains(&Key::C) {

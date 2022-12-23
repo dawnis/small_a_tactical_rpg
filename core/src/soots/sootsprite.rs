@@ -81,7 +81,7 @@ impl SootSprite {
     }
 
     pub fn command(&mut self, legal: Vec<Position>, cmd: usize) {
-        let movements = &self.moveset()[2..];
+        let movements = &self.moveset();
         let requested = movements[cmd];
         if legal.iter().filter(|&x| x == &requested).count() > 0 {
             self.position = requested;
