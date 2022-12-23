@@ -57,6 +57,8 @@ fn model(app: &App) -> Model {
     }
 
     gctl.place(SootSprite::new(app, (-10, 0), ZY, Hero{name: String::from("jak")}));
+    gctl.place(SootSprite::new(app, (-9, 0), ZY, Hero{name: String::from("mag")}));
+    gctl.place(SootSprite::new(app, (-10, 1), ZY, Hero{name: String::from("sed")}));
 
     Model {
         _window,
@@ -75,6 +77,15 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     model.gctl.update_bugs(app);
 
     let focus_hero = model.gctl.focus();
+
+    if app.keys.down.contains(&Key::H) {
+        model.gctl.change_focus(app);
+
+        for hero in model.gctl.sprites.iter().filter(|&x| x.borrow().stype == Hero {name: model.gctl.focus()}) {
+            let hpos = hero.borrow().position;
+            model.world_offset = (-hpos.coord.x, -hpos.coord.y)
+        }
+    }
 
     if app.keys.down.contains(&Key::S) {
         model.gctl.command_hero(app, &focus_hero, 0);

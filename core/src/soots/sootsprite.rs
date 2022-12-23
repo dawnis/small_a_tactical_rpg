@@ -49,7 +49,7 @@ impl SootSprite {
                     (pt2(x, y), ROYALBLUE)
                 });
 
-                draw.polygon().points_colored(points);
+                draw.polyline().weight(3.0).points_colored(points);
             }
         }
     }

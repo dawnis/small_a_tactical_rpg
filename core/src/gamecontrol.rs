@@ -19,6 +19,7 @@ pub struct GController {
     pub sprites: Vec<RefCell<SootSprite>>,
     gamestate: GameState,
     hfocus: String,
+    last_hero_switch: f64,
 }
 
 impl GController {
@@ -28,7 +29,8 @@ impl GController {
             board,
             sprites: Vec::new(),
             gamestate: GameState::Ongoing,
-            hfocus: String::from("jak"),
+            hfocus: String::from("sed"),
+            last_hero_switch: 0.,
         }
     }
 
@@ -60,6 +62,21 @@ impl GController {
 
     pub fn focus(&self) -> String {
         self.hfocus.clone()
+    }
+
+    pub fn change_focus(&mut self, app: &App) {
+        if app.duration.since_start.ms() - self.last_hero_switch > 100. {
+            if self.hfocus == *"sed" {
+                self.hfocus = String::from("jak")
+            } else if self.hfocus == *"jak" {
+                self.hfocus = String::from("mag") 
+            }
+            else {
+                self.hfocus = String::from("sed")
+            }
+            
+            self.last_hero_switch = app.duration.since_start.ms();
+        }
     }
 
 }
