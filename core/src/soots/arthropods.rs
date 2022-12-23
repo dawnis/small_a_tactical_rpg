@@ -80,13 +80,13 @@ impl Arthropod {
                     let q = p + Left + Left;
                     let b = p + Right + Right;
                     vec![
-                        p,
-                        p,
-                        p + step(1, p.dir) + step(1, p.dir + Right),
+                        p + Right,
+                        p + Left,
+                        p + step(1, p.dir),
                         p + step(1, p.dir) + step(1, p.dir + Left),
-                        p + step(1, q.dir) + step(1, q.dir + Right),
+                        p + step(1, q.dir),
                         p + step(1, q.dir) + step(1, q.dir + Left),
-                        p + step(1, b.dir) + step(1, b.dir + Right),
+                        p + step(1, b.dir),
                         p + step(1, b.dir) + step(1, b.dir + Left),
                     ]
                 }
