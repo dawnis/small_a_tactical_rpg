@@ -37,7 +37,7 @@ impl<'a> BugFormation<'a> {
             Arthropod::Hero { name } => BugFormation { 
                 name,
                 terrains: vec![Wood, Earth, Veg, Void],
-                reaction: 200.,
+                reaction: 50.,
                 vision: 9u32, 
             }
         }
