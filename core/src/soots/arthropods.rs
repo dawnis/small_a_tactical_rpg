@@ -76,12 +76,28 @@ impl Arthropod {
                 ]
             }
             Arthropod::Hero{name} => {
-                let mut tf = vec![p + Left, p + Right];
-                let mut mv: Vec<Position> = p.coord.neighbors()
-                                                      .map(|x| Position::new(x, p.dir))
-                                                      .to_vec();
-                tf.append(&mut mv);
-                tf
+                if name == "jak" {
+                    let q = p + Left + Left;
+                    let b = p + Right + Right;
+                    vec![
+                        p + Left,
+                        p + Right,
+                        p + step(1, p.dir) + step(1, p.dir + Right),
+                        p + step(1, p.dir) + step(1, p.dir + Left),
+                        p + step(1, q.dir) + step(1, q.dir + Right),
+                        p + step(1, q.dir) + step(1, q.dir + Left),
+                        p + step(1, b.dir) + step(1, b.dir + Right),
+                        p + step(1, b.dir) + step(1, b.dir + Left),
+                    ]
+                }
+                else {
+                    let mut tf = vec![p + Left, p + Right];
+                    let mut mv: Vec<Position> = p.coord.neighbors()
+                                                          .map(|x| Position::new(x, p.dir))
+                                                          .to_vec();
+                    tf.append(&mut mv);
+                    tf
+                }
             }
         }
     }

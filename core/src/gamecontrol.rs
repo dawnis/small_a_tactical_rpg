@@ -8,9 +8,17 @@ use std::cell::RefCell;
 
 mod movement;
 
+enum GameState {
+    Won,
+    Lost,
+    Ongoing,
+}
+
 pub struct GController {
     pub board: Board<HexagonalTile>,
     pub sprites: Vec<RefCell<SootSprite>>,
+    gamestate: GameState,
+    hfocus: String,
 }
 
 impl GController {
@@ -19,6 +27,8 @@ impl GController {
         GController { 
             board,
             sprites: Vec::new(),
+            gamestate: GameState::Ongoing,
+            hfocus: String::from("jak"),
         }
     }
 
@@ -46,6 +56,10 @@ impl GController {
                 hero.borrow_mut().last_updated += app.duration.since_prev_update.ms();
             }
         }
+    }
+
+    pub fn focus(&self) -> String {
+        self.hfocus.clone()
     }
 
 }

@@ -10,14 +10,12 @@ use core::Mrgb;
 use log::*;
 use hexboard::*;
 use hexboard::builder::BoardBuilder;
-use core::hexagonaltile::tile::HexagonalTile;
 use core::factory::HextileFactory;
 use std::path::Path;
 use core::soots::sootsprite::SootSprite;
 use core::soots::arthropods::Arthropod::*;
 use core::{OPT, cfg_fetch};
 use hex2d::Direction::*;
-use hex2d::Position;
 
 fn main() {
     init_logging(OPT.verbosity);
@@ -52,7 +50,7 @@ fn model(app: &App) -> Model {
 
     let mut gctl = GController::new(board);
 
-    let wasp_vec: Vec<SootSprite> = (0..99).map(|_| SootSprite::new(app, (0, 0), YZ, Wasp{})).collect();
+    let wasp_vec: Vec<SootSprite> = (0..9).map(|_| SootSprite::new(app, (0, 0), YZ, Wasp{})).collect();
 
     for w in wasp_vec {
         gctl.place(w);
@@ -76,28 +74,30 @@ fn update(app: &App, model: &mut Model, _update: Update) {
 
     model.gctl.update_bugs(app);
 
+    let focus_hero = model.gctl.focus();
+
     if app.keys.down.contains(&Key::S) {
-        model.gctl.command_hero(app, "jak", 0);
+        model.gctl.command_hero(app, &focus_hero, 0);
     }
 
     if app.keys.down.contains(&Key::D) {
-        model.gctl.command_hero(app, "jak", 1);
+        model.gctl.command_hero(app, &focus_hero, 1);
     }
 
     if app.keys.down.contains(&Key::E) {
-        model.gctl.command_hero(app, "jak", 2);
+        model.gctl.command_hero(app, &focus_hero, 2);
     }
 
     if app.keys.down.contains(&Key::W) {
-        model.gctl.command_hero(app, "jak", 3);
+        model.gctl.command_hero(app, &focus_hero, 3);
     }
 
     if app.keys.down.contains(&Key::Q) {
-        model.gctl.command_hero(app, "jak", 4);
+        model.gctl.command_hero(app, &focus_hero, 4);
     }
 
     if app.keys.down.contains(&Key::A) {
-        model.gctl.command_hero(app, "jak", 5);
+        model.gctl.command_hero(app, &focus_hero, 5);
     }
 
     if app.keys.down.contains(&Key::C) {
