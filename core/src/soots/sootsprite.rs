@@ -1,7 +1,7 @@
 use nannou::prelude::*;
 use crate::hexagonaltile::tile::HexagonalTile;
 use rand::{thread_rng, Rng};
-use hex2d::{Coordinate, Position, Direction, Spacing};
+use hex2d::{Angle, Coordinate, Position, Direction, Spacing};
 use hexboard::GamePiece;
 use crate::soots::arthropods::Arthropod;
 use crate::OPT;
@@ -81,8 +81,24 @@ impl SootSprite {
     }
 
     pub fn command(&mut self, legal: Vec<Position>, cmd: usize) {
+        let angular_change = self.position.dir - Direction::ZY;
+
+        let ccw_shift = match angular_change {
+            Angle::Forward => 0,
+            Angle::Right => 1,
+            Angle::RightBack => 2,
+            Angle::Back => 3,
+            Angle::LeftBack => 4,
+            Angle::Left => 5,
+        };
+
+        let angular_command_corrected = if cmd < 2 {cmd}
+        else {
+            (((cmd - 2) + ccw_shift) % 6) + 2
+        };
+
         let movements = &self.moveset();
-        let requested = movements[cmd];
+        let requested = movements[angular_command_corrected];
         if legal.iter().filter(|&x| x == &requested).count() > 0 {
             self.position = requested;
         }

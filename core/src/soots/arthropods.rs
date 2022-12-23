@@ -94,8 +94,8 @@ impl Arthropod {
                     let q = p + Left + Left;
                     let b = p + Right + Right;
                     vec![
-                        p,
-                        p,
+                        p + Right,
+                        p + Left,
                         p + step(3, p.dir),
                         p + step(1, p.dir + Left),
                         p + step(3, q.dir),
