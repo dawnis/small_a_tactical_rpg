@@ -2,14 +2,17 @@ use hexboard::Board;
 use nannou::prelude::*;
 use hex2d::Coordinate;
 use crate::hexagonaltile::tile::HexagonalTile;
+use crate::hexagonaltile::terrain::Terrain;
 use crate::soots::sootsprite::SootSprite;
 use crate::soots::arthropods::Arthropod;
 use crate::gamecontrol::movement::SpriteMovement;
 use std::cell::RefCell;
+use log::*;
 
 mod movement;
 
-enum GameState {
+#[derive(PartialEq, Eq)]
+pub enum GameState {
     Won,
     Lost,
     Ongoing,
@@ -18,7 +21,7 @@ enum GameState {
 pub struct GController {
     pub board: Board<HexagonalTile>,
     pub sprites: Vec<RefCell<SootSprite>>,
-    gamestate: GameState,
+    pub gamestate: GameState,
     hfocus: String,
     last_hero_switch: f64,
 }
@@ -115,6 +118,27 @@ impl GController {
         let dead_idx = self.sprites.iter().position(|s| !s.borrow().alive);
         if let Some(idx) = dead_idx {
                 self.sprites.remove(idx);
+        }
+    }
+
+    pub fn check_game_state(&mut self) {
+        let num_heros = self.sprites.iter().filter(|&h| matches!(h.borrow().stype, Arthropod::Hero{name: _})).count();
+        let num_bugs = self.sprites.iter().filter(|&h| matches!(h.borrow().stype, Arthropod::Wasp{})).count();
+
+        if num_heros == 0 {
+            self.gamestate = GameState::Lost;
+            return;
+        } else if num_bugs == 0 {
+            self.gamestate = GameState::Won;
+            return;
+        }
+
+        //check to see if a hero has made it to the goal
+        for hero in self.sprites.iter().filter(|&h| matches!(h.borrow().stype, Arthropod::Hero{name: _})) {
+            if self.board.tiles.get(&hero.borrow().position.coord).unwrap().terrain == Terrain::Void {
+                self.gamestate = GameState::Won;
+                return;
+            }
         }
     }
 

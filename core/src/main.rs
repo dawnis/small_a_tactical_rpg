@@ -5,7 +5,7 @@ mod factory;
 
 use nannou::prelude::*;
 use crate::logging::init_logging;
-use core::gamecontrol::GController;
+use core::gamecontrol::{GController, GameState};
 use core::Mrgb;
 use log::*;
 use hexboard::*;
@@ -26,6 +26,8 @@ struct Model {
     _window: window::Id,
     pub gctl: GController, 
     pub world_offset: (i32, i32),
+    pub win_texture: wgpu::Texture,
+    pub lose_texture: wgpu::Texture,
 }
 
 fn model(app: &App) -> Model {
@@ -38,6 +40,13 @@ fn model(app: &App) -> Model {
     let level_maps_folder = cfg_fetch("assets.maps");
     let image_pth = Path::new(&level_maps_folder).join(Path::new(&level));
     debug!("Image path read at {:?}", image_pth);
+
+    let asset_path = cfg_fetch("assets.banners");
+    let banner_path_win = cfg_fetch("banners.win");
+    let banner_path_lose = cfg_fetch("banners.lose");
+
+    let win_texture_path = Path::new(&asset_path).join(Path::new(&banner_path_win));
+    let lose_texture_path = Path::new(&asset_path).join(Path::new(&banner_path_lose));
 
     let app_rect = app.window_rect();
     let app_rect_as_tuple = (app_rect.left(), app_rect.right(), app_rect.top(), app_rect.bottom());
@@ -64,6 +73,8 @@ fn model(app: &App) -> Model {
         _window,
         gctl,
         world_offset: (0, 0),
+        win_texture: wgpu::Texture::from_path(app, win_texture_path).unwrap(),
+        lose_texture: wgpu::Texture::from_path(app, lose_texture_path).unwrap(),
     }
 }
 
@@ -155,6 +166,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
     }
 
     model.gctl.check_captures();
+    model.gctl.check_game_state();
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
@@ -166,6 +178,20 @@ fn view(app: &App, model: &Model, frame: Frame) {
     htf.display_board(&model.gctl.board, &model.gctl.sprites, model.world_offset);
 
     draw.background().color(BEIGE);
+
+    let app_rect = app.window_rect();
+
+    if model.gctl.gamestate == GameState::Won {
+        debug!("you win!");
+        draw.texture(&model.win_texture)
+            .wh(app_rect.wh())
+            .xy(app_rect.xy());
+    } else if model.gctl.gamestate == GameState::Lost {
+        debug!("you lose!");
+        draw.texture(&model.lose_texture)
+            .wh(app_rect.wh())
+            .xy(app_rect.xy());
+    }
 
     draw.to_frame(app, &frame).unwrap();
 }
