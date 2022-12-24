@@ -86,15 +86,26 @@ impl GController {
 
     pub fn change_focus(&mut self, app: &App) {
         if app.duration.since_start.ms() - self.last_hero_switch > 100. {
-            if self.hfocus == *"sed" {
-                self.hfocus = String::from("jak")
-            } else if self.hfocus == *"jak" {
-                self.hfocus = String::from("mag") 
+            let mut names: Vec<String> = Vec::new();
+            for sprite in self.sprites.iter() {
+                if let Arthropod::Hero{name} = &sprite.borrow().stype {
+                    names.push(name.to_string());
+                }
+            };
+
+            if names.is_empty() {
+                return;
             }
-            else {
-                self.hfocus = String::from("sed")
+
+            let h_index = names.iter().position(|h| h == &self.hfocus);
+
+            match h_index {
+                Some(idx) => {
+                    let next = (idx + 1) % names.len();
+                    self.hfocus = names[next].clone();
+                },
+                None => self.hfocus = names[0].clone(),
             }
-            
             self.last_hero_switch = app.duration.since_start.ms();
         }
     }
