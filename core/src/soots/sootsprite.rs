@@ -11,7 +11,7 @@ pub struct SootSprite {
     pub position: Position,
     pub last_updated: f64,
     texture: wgpu::Texture,
-    
+    pub alive: bool,
 }
 
 impl SootSprite {
@@ -22,6 +22,7 @@ impl SootSprite {
             position: Position::new(Coordinate::new(loc.0, loc.1), orient),
             last_updated: 0.0,
             texture: stype.to_texture(app),
+            alive: true,
         }
     }
 

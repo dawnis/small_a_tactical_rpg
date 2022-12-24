@@ -154,6 +154,7 @@ fn update(app: &App, model: &mut Model, _update: Update) {
          model.gctl.board.update_scale(updated_scale);
     }
 
+    model.gctl.check_captures();
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {

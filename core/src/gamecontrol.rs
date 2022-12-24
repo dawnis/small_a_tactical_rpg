@@ -1,5 +1,6 @@
 use hexboard::Board;
 use nannou::prelude::*;
+use hex2d::Coordinate;
 use crate::hexagonaltile::tile::HexagonalTile;
 use crate::soots::sootsprite::SootSprite;
 use crate::soots::arthropods::Arthropod;
@@ -50,14 +51,31 @@ impl GController {
     }
 
     pub fn command_hero(&mut self, app: &App, hero_name: &str, command: usize) {
+
+        let mut hero_moved = false;
+
         for hero in self.sprites.iter().filter(|&s| s.borrow().stype == Arthropod::Hero{name: String::from(hero_name)}) {
             if hero.borrow().last_updated > hero.borrow().stype.reaction_time() {
                 hero.borrow_mut().last_updated = 0.;
                 self.command_move(hero, command);
+                hero_moved = true;
             } else {
                 hero.borrow_mut().last_updated += app.duration.since_prev_update.ms();
             }
         }
+
+        let mut hero_coordinate: Vec<Coordinate> = self.sprites.iter()
+                .filter(|&s| s.borrow().stype == Arthropod::Hero{name: String::from(hero_name)})
+                .map(|s| s.borrow().position.coord).collect();
+        let hero_coordinate = hero_coordinate.pop().unwrap();
+
+
+        //All valid sprites are kept
+        for sprite in self.sprites.iter() {
+            if (sprite.borrow().stype == Arthropod::Wasp{}) && ((hero_coordinate == sprite.borrow().position.coord) && hero_moved) {
+                    sprite.borrow_mut().alive = false;
+                }
+            }
     }
 
     pub fn focus(&self) -> String {
@@ -76,6 +94,14 @@ impl GController {
             }
             
             self.last_hero_switch = app.duration.since_start.ms();
+        }
+    }
+
+    ///Checks dead/alive status of all sprites -- only removes one per cycle
+    pub fn check_captures(&mut self) {
+        let dead_idx = self.sprites.iter().position(|s| !s.borrow().alive);
+        if let Some(idx) = dead_idx {
+                self.sprites.remove(idx);
         }
     }
 
