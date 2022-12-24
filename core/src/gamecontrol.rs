@@ -40,42 +40,44 @@ impl GController {
     }
 
     pub fn update_bugs(&mut self, app: &App) {
+        let mut xc: Vec<Coordinate> = Vec::new();
         for sprite in self.sprites.iter().filter(|&s| !matches!(s.borrow().stype, Arthropod::Hero{name: _})) {
             if sprite.borrow().last_updated > sprite.borrow().stype.reaction_time() {
                 sprite.borrow_mut().last_updated = 0.;
-                self.walk(sprite);
+                xc.push(self.walk(sprite));
             } else {
                 sprite.borrow_mut().last_updated += app.duration.since_prev_update.ms();
+            }
+        }
+
+        //Check if any of the new coordinates match the heros
+        for hero in self.sprites.iter().filter(|&s| matches!(s.borrow().stype, Arthropod::Hero{name: _})) {
+            if xc.iter().filter(|&c| c == &hero.borrow().position.coord).count() > 0 {
+                hero.borrow_mut().alive = false;
             }
         }
     }
 
     pub fn command_hero(&mut self, app: &App, hero_name: &str, command: usize) {
-
-        let mut hero_moved = false;
-
+        let mut hc: Vec<Coordinate> = Vec::new();
         for hero in self.sprites.iter().filter(|&s| s.borrow().stype == Arthropod::Hero{name: String::from(hero_name)}) {
             if hero.borrow().last_updated > hero.borrow().stype.reaction_time() {
                 hero.borrow_mut().last_updated = 0.;
-                self.command_move(hero, command);
-                hero_moved = true;
+                hc.push(self.command_move(hero, command));
             } else {
                 hero.borrow_mut().last_updated += app.duration.since_prev_update.ms();
             }
         }
 
-        let mut hero_coordinate: Vec<Coordinate> = self.sprites.iter()
-                .filter(|&s| s.borrow().stype == Arthropod::Hero{name: String::from(hero_name)})
-                .map(|s| s.borrow().position.coord).collect();
-        let hero_coordinate = hero_coordinate.pop().unwrap();
-
-
         //All valid sprites are kept
-        for sprite in self.sprites.iter() {
-            if (sprite.borrow().stype == Arthropod::Wasp{}) && ((hero_coordinate == sprite.borrow().position.coord) && hero_moved) {
-                    sprite.borrow_mut().alive = false;
+        if !hc.is_empty() {
+            let hero_coordinate = hc.pop().unwrap();
+            for sprite in self.sprites.iter() {
+                if (sprite.borrow().stype == Arthropod::Wasp{}) && (hero_coordinate == sprite.borrow().position.coord) {
+                        sprite.borrow_mut().alive = false;
+                    }
                 }
-            }
+        }
     }
 
     pub fn focus(&self) -> String {

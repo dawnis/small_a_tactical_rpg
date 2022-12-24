@@ -75,13 +75,14 @@ impl SootSprite {
         self.stype.moves(self.position)
     }
 
-    pub fn walk(&mut self, move_set: Vec<Position>) {
+    pub fn walk(&mut self, move_set: Vec<Position>) -> Coordinate {
         let mut rng = thread_rng();
         let m = rng.gen_range(0..move_set.len());
         self.position = move_set[m];
+        self.position.coord
     }
 
-    pub fn command(&mut self, legal: Vec<Position>, cmd: usize) {
+    pub fn command(&mut self, legal: Vec<Position>, cmd: usize) -> Coordinate {
         let angular_change = self.position.dir - Direction::ZY;
 
         let ccw_shift = match angular_change {
@@ -103,6 +104,8 @@ impl SootSprite {
         if legal.iter().filter(|&x| x == &requested).count() > 0 {
             self.position = requested;
         }
+
+        self.position.coord
     }
 
 }

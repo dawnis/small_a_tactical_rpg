@@ -1,24 +1,24 @@
-use hex2d::Position;
+use hex2d::{Coordinate, Position};
 use crate::{gamecontrol::GController, soots::sootsprite::SootSprite};
 use std::cell::RefCell;
 
 pub trait SpriteMovement {
     fn legal_moves(&self, s: &SootSprite) -> Vec<Position>;
     fn filter_move_set(&self, s: &SootSprite, requested: Vec<Position>) -> Vec<Position>;
-    fn walk(&self, s: &RefCell<SootSprite>);
-    fn command_move(&self, s: &RefCell<SootSprite>, cmd: usize);
+    fn walk(&self, s: &RefCell<SootSprite>) -> Coordinate;
+    fn command_move(&self, s: &RefCell<SootSprite>, cmd: usize) -> Coordinate;
 }
 
 impl SpriteMovement for GController {
 
-    fn walk(&self, s: &RefCell<SootSprite>) {
+    fn walk(&self, s: &RefCell<SootSprite>) -> Coordinate {
         let legal_move_set = self.legal_moves(&s.borrow());
-        s.borrow_mut().walk(legal_move_set);
+        s.borrow_mut().walk(legal_move_set)
     }
 
-    fn command_move(&self, s: &RefCell<SootSprite>, cmd: usize) {
+    fn command_move(&self, s: &RefCell<SootSprite>, cmd: usize) -> Coordinate {
         let legal_move_set = self.legal_moves(&s.borrow());
-        s.borrow_mut().command(legal_move_set, cmd);
+        s.borrow_mut().command(legal_move_set, cmd)
     }
 
     fn legal_moves(&self, s: &SootSprite) -> Vec<Position> {
