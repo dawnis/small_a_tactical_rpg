@@ -65,9 +65,9 @@ fn model(app: &App) -> Model {
         gctl.place(w);
     }
 
-    gctl.place(SootSprite::new(app, (-10, 0), ZY, Hero{name: String::from("jak")}));
-    gctl.place(SootSprite::new(app, (-9, 0), ZY, Hero{name: String::from("mag")}));
-    gctl.place(SootSprite::new(app, (-10, 1), ZY, Hero{name: String::from("sed")}));
+    gctl.place(SootSprite::new(app, (6, 5), ZY, Hero{name: String::from("jak")}));
+    gctl.place(SootSprite::new(app, (5, 5), ZY, Hero{name: String::from("mag")}));
+    gctl.place(SootSprite::new(app, (6, 6), ZY, Hero{name: String::from("sed")}));
 
     Model {
         _window,

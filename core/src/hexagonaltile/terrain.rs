@@ -42,10 +42,10 @@ impl Terrain {
     pub fn color(&self) -> Mrgb {
         match self {
             Terrain::Rock => SLATEGRAY,
-            Terrain::Air => ALICEBLUE,
+            Terrain::Air => DEEPSKYBLUE,
             Terrain::Veg => GREENYELLOW,
-            Terrain::Earth => FIREBRICK,
-            Terrain::Wood => GOLDENROD,
+            Terrain::Earth => GOLDENROD,
+            Terrain::Wood => SIENNA,
             _ => BLACK,
         }
     }
